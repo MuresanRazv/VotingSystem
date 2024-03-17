@@ -1,4 +1,5 @@
 import random
+from functools import reduce
 
 # Miller-Rabin primality test for generating big prime numbers
 def is_prime(n, k=128):
@@ -31,14 +32,21 @@ def is_prime(n, k=128):
             
     return True
 
-def generate_prime_candidate(length=1024):
-    # generate random bits
-    p = random.getrandbits(length)
+def generate_prime_candidate(length=128):
+    while True:
+        # generate random bits
+        p = random.getrandbits(length)
 
-    # modify least significant bit and most significant bit to be 1, ensuring the number is not even
-    p |= (1 << length - 1) | 1
+        # set least significant bit to 1, ensuring the number is odd
+        p |= 1
 
-    return p
+        # set most significant bit to 1
+        p |= (1 << length - 1)
+
+        # Check primality using a reliable primality test like Miller-Rabin
+        if is_prime(p):
+            return p
+
 
 def binary_gcd(a, b):
     if a == 0:
