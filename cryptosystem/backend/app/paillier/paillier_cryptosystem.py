@@ -63,11 +63,8 @@ class Paillier:
             raise ValueError("Ciphertext is too large")
         
         return L(pow(ciphertext, lbd, n**2), n) * u % n
-        
-
-paellier = Paillier()
-public, private = paellier.generate_keys()
-encrypted = paellier.encrypt(public, sh.serialize("Hello World"))
-decrypted = paellier.decrypt(public, private, encrypted)
-print(encrypted)
-print(sh.deserialize(decrypted))
+    
+    # works only for numbers
+    def add(self, public_key, first_plaintext, second_plaintext):
+        n, _ = public_key
+        return ((first_plaintext % n**2) * (second_plaintext % n**2)) % n**2
