@@ -10,3 +10,4 @@ class User(BaseModel):
     full_name: Optional[str] = None
     address: Optional[str] = None
     CNP: Optional[str] = None
+    disabled: Optional[bool] = None
