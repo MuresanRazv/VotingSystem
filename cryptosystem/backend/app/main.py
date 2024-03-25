@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from routers import user_router, candidate_router, login_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import requests
 
 app = FastAPI()
 

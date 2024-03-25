@@ -56,10 +56,10 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-async def update_user(user_id: str, user: User) -> User:
+async def update_user(user_email: str, user: User) -> User:
     user_dict = user.model_dump(exclude_unset=True)
-    await client_db.users.update_one({"_id": user_id}, {"$set": user_dict})
-    return user
+    await client_db.users.update_one({"email": user_email}, {"$set": user_dict})
+    return await get_user_by_email(user.email)
 
-async def delete_user(user_id: str):
-    await client_db.users.delete_one({"_id": user_id})
+async def delete_user(user_email: str):
+    await client_db.users.delete_one({"email": user_email})
