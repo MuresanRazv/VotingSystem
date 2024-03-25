@@ -15,6 +15,8 @@
 </style>
 
 <script>
+	import { goto } from "$app/navigation";
+	import { userToken } from "../stores/user";
     let email = ""
     let password = ""
 
@@ -27,9 +29,18 @@
             body: JSON.stringify({ email, password })
         })
         .then(response => response.json())
+        .then(data => {
+            localStorage.setItem('access_token', data.access_token)
+            $userToken
+            window.location.href = '/dashboard'
+        })
         .catch(error => console.error('Error:', error))
     }
 </script>
+
+{#if $userToken}
+    {goto('/dashboard')}
+{/if}
 
 <div class="card">
 	<header class="card-header">
