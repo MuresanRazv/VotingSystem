@@ -2,6 +2,7 @@ import { readable, writable } from "svelte/store";
 import { browser } from "$app/environment";
 
 type User = {
+    _id: string;
     username: string;
     email: string;
     password: string;

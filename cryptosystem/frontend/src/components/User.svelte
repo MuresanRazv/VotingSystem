@@ -4,8 +4,6 @@
     import { Toast, getToastStore } from '@skeletonlabs/skeleton';
     import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
     import { initializeStores } from '@skeletonlabs/skeleton';
-	import { afterUpdate } from "svelte";
-    import { userToken } from "../stores/user";
 
     initializeStores();
     const toastStore = getToastStore();
@@ -15,20 +13,23 @@
     
     let selectedCounty = '';
     let selectedCity = '';
-    let name = $user?.full_name.split(" ")[0];
-    let surname = $user?.full_name.split(" ").slice(1).join(" ");
+    let name = '';
+    let surname = '';
 
-    afterUpdate(() => {
-        name = $user?.full_name.split(" ")[0];
-        surname = $user?.full_name.split(" ").slice(1).join(" ");
-    });
+    function handleChangeName(event: any) {
+        name = event.target.value;
+    }
+
+    function handleChangeSurname(event: any) {
+        surname = event.target.value;
+    }
 
     function updateInformation() {
         if (name == '' || surname == '' || selectedCounty == '' || selectedCity == '') {
             toastStore.trigger(t);
         } else {
-            fetch(`http://127.0.0.1:8000/api/users/${$user?.email}`, {
-                method: 'PUT',
+            fetch(`http://127.0.0.1:8000/api/users/${$user?._id}`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -53,7 +54,6 @@
                     });
                 }
             })
-            console.log(name, surname, selectedCounty, selectedCity);
         }
     }
 </script>
@@ -106,12 +106,12 @@
         <div class="form-group">
             <label class="label">
                 <span>Name</span>
-                <input class="input" type="text" placeholder="Name" bind:value={name} required />
+                <input class="input" type="text" placeholder="Name" on:input={handleChangeName} value={$user?.full_name.split(' ')[0]} required />
             </label>
                             
             <label class="label">
                 <span>Surname</span>
-                <input class="input" type="text" placeholder="Surname" bind:value={surname} required />
+                <input class="input" type="text" placeholder="Surname" on:input={handleChangeSurname} value={$user?.full_name.split(" ").slice(1).join(' ')} required />
             </label>
         </div>
     
@@ -119,7 +119,7 @@
             <span>County</span>
             <select class="select" bind:value={selectedCounty} required >
                 {#each Object.keys($romaniaCities) as county}
-                    <option value={county}>{county}</option>
+                    <option selected={county === $user?.address.split(', ')[1]} value={county}>{county}</option>
                 {/each}
             </select>
         </label>
@@ -128,7 +128,7 @@
             <span>City</span>
             <select class="select" bind:value={selectedCity} required >
                 {#if selectedCounty == ''}
-                    <option value=''>Select a county first</option>
+                    <option value=''>{$user?.address.split(", ")[0]}</option>
                 {:else}
                     {#each $romaniaCities[selectedCounty] as city}
                         <option value={city}>{city}</option>

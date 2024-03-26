@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from bson import ObjectId
 
 class Login(BaseModel):
     email: str
@@ -9,4 +10,4 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    email: str
+    id: str

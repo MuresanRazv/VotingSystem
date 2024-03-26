@@ -4,7 +4,8 @@ from fastapi.security import OAuth2PasswordBearer
 from models import TokenData
 from jose import JWTError, jwt
 from typing import Annotated
-from models import User
+from models import User, UpdatedUser
+from bson import ObjectId
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -19,7 +20,7 @@ async def create_user(user: User) -> User:
     return user
 
 async def get_user_by_id(user_id: str) -> User:
-    user_dict = await client_db.users.find_one({"_id": user_id})
+    user_dict = await client_db.users.find_one({"_id": ObjectId(user_id)})
     if (user_dict is None):
         return None
     return User(**user_dict)
@@ -38,13 +39,13 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        id: str = payload.get("sub")
+        if id is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
+        token_data = TokenData(id=id)
     except JWTError:
         raise credentials_exception
-    user = await get_user_by_email(token_data.email)
+    user = await get_user_by_id(token_data.id)
     if user is None:
         raise credentials_exception
     return user
@@ -56,10 +57,17 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-async def update_user(user_email: str, user: User) -> User:
+async def update_user(user_id: str, user: UpdatedUser) -> User:
     user_dict = user.model_dump(exclude_unset=True)
-    await client_db.users.update_one({"email": user_email}, {"$set": user_dict})
-    return await get_user_by_email(user.email)
 
-async def delete_user(user_email: str):
-    await client_db.users.delete_one({"email": user_email})
+    try:
+        result = await client_db.users.update_one({"_id": ObjectId(user_id)}, {"$set": user_dict})
+        if result.matched_count == 0:
+            raise HTTPException(status=404, text=f"No user found with ID {user_id}")
+    except Exception as e:
+        raise HTTPException(status=500, text=f"HTTP error occurred while updating user document: {e}")
+    
+    return await get_user_by_id(user_id)
+
+async def delete_user(user_id: str):
+    await client_db.users.delete_one({"_id": ObjectId(user_id)})
