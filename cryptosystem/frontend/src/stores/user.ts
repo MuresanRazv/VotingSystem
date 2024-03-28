@@ -6,12 +6,24 @@ type User = {
     username: string;
     email: string;
     password: string;
-    full_name: string;
-    address: string;
+    firstname: string;
+    lastname: string;
+    county: string;
+    city: string;
     CNP: string;
-} | null;
+};
 
 export const userToken = readable(browser && localStorage.getItem("access_token"));
-const user = writable<User>();
+const user = writable<User>({
+    _id: "",
+    username: "",
+    email: "",
+    password: "",
+    firstname: "",
+    lastname: "",
+    county: "",
+    city: "",
+    CNP: ""
+});
 
 export default user;

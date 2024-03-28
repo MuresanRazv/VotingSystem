@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from bson import ObjectId
-from typing import Optional
+from typing import Optional, Dict
 
 class User(BaseModel):
     id: ObjectId = Field(default_factory=ObjectId, alias='_id')
@@ -15,10 +15,15 @@ class User(BaseModel):
     username: str
     password: str
     email: str
-    full_name: Optional[str] = None
-    address: Optional[str] = None
-    disabled: Optional[bool] = None
+    firstname: Optional[str] = None
+    lastname: Optional[str] = None
+    county: Optional[str] = None
+    city: Optional[str] = None
+    # ObjectId => poll_id, str => decription key
+    polls: Optional[Dict[ObjectId, str]] = None
 
 class UpdatedUser(BaseModel):
-    full_name: Optional[str] = None
-    address: Optional[str] = None
+    firstname: Optional[str] = None
+    lastname: Optional[str] = None
+    county: Optional[str] = None
+    city: Optional[str] = None
