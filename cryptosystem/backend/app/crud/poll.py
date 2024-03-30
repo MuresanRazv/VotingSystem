@@ -1,5 +1,5 @@
 from database.connection import application_db
-from models import Poll
+from models import Poll, UpdatedPoll
 from bson import ObjectId
 from fastapi import HTTPException
 
@@ -35,4 +35,15 @@ async def update_poll(poll_id: str, poll: Poll) -> Poll:
     except Exception as e:
         raise HTTPException(status_code=500, detail="Error updating poll")
 
+    return await get_poll_by_id(poll_id)
+
+async def create_poll_candidate(poll_id: str, candidate_id: str, encrypted_count: str):
+    await application_db.polls.update_one({"_id": ObjectId(poll_id)}, {"$set": {"candidates." + candidate_id: encrypted_count}})
+
+async def remove_poll_candidate(poll_id: str, candidate_id: str):
+    await application_db.polls.update_one({"_id": ObjectId(poll_id)}, {"$unset": {"candidates." + candidate_id: ""}})
+
+async def update_poll_candidate(poll_id: str, candidate_id: str, poll: UpdatedPoll):
+    poll_dict = poll.model_dump()
+    await application_db.polls.update_one({"_id": ObjectId(poll_id)}, {"$set": {"candidates." + candidate_id: poll_dict["candidates"][candidate_id]}})
     return await get_poll_by_id(poll_id)

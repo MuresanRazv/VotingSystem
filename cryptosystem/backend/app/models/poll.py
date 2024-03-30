@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field, List
+from pydantic import BaseModel, Field
+from typing import Optional
 from typing import Dict
 from bson import ObjectId
 from datetime import datetime
@@ -24,10 +25,15 @@ class Poll(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-class CreatePoll(BaseModel):
+class UpdatedPoll(BaseModel):
+    class Config:
+        allow_population_by_field_name = True
+        json_encoders = {
+            ObjectId: str
+        }
+        arbitrary_types_allowed = True
+    
     title: str
     description: str
-    candidates: List[ObjectId]
-    start_date: datetime
-    end_date: datetime
-    created_by: ObjectId
+    start_date: Optional[datetime]
+    end_date: Optional[datetime]

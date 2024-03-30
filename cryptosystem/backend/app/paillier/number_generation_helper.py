@@ -1,5 +1,4 @@
 import random
-from functools import reduce
 
 # Miller-Rabin primality test for generating big prime numbers
 def is_prime(n, k=128):

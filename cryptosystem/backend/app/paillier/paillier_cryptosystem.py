@@ -1,5 +1,4 @@
-import number_generation_helper as ngh
-import serialize_helper as sh
+from paillier.number_generation_helper import generate_prime_candidate, binary_gcd, lcm, modinv
 import random
 
 ALPHABET = (
@@ -18,23 +17,23 @@ def L(x, n):
 class Paillier:
     #constructor
     def __init__(self, bit_length=BIT_LENGTH):
-        self.p = ngh.generate_prime_candidate(bit_length)
-        self.q = ngh.generate_prime_candidate(bit_length)
+        self.p = generate_prime_candidate(bit_length)
+        self.q = generate_prime_candidate(bit_length)
         print(self.p, self.q)
         # check p and q are relatively prime
-        while ngh.binary_gcd(self.p*self.q, (self.p-1)*(self.q-1)) != 1:
-            self.p = ngh.generate_prime_candidate(bit_length)
-            self.q = ngh.generate_prime_candidate(bit_length)
+        while binary_gcd(self.p*self.q, (self.p-1)*(self.q-1)) != 1:
+            self.p = generate_prime_candidate(bit_length)
+            self.q = generate_prime_candidate(bit_length)
 
     def generate_keys(self):
         n = self.p * self.q
-        lbd = ngh.lcm(self.p - 1, self.q - 1)
+        lbd = lcm(self.p - 1, self.q - 1)
         g = random.randint(2, n ** 2 - 1)
         # ensure n divides the order of g
-        u = ngh.modinv(L(pow(g, lbd, n ** 2), n), n)
-        while u == False or ngh.binary_gcd(g, n ** 2) != 1:
+        u = modinv(L(pow(g, lbd, n ** 2), n), n)
+        while u == False or binary_gcd(g, n ** 2) != 1:
             g = random.randint(1, n ** 2)
-            u = ngh.modinv(L(pow(g, lbd, n ** 2), n), n)
+            u = modinv(L(pow(g, lbd, n ** 2), n), n)
 
         return (n, g), (lbd, u)
     
@@ -49,7 +48,7 @@ class Paillier:
         
         # Select random r where 0 < r < n and gcd(r, n) = 1
         r = random.SystemRandom().randrange(1, n - 1)
-        while ngh.binary_gcd(r, n) != 1:
+        while binary_gcd(r, n) != 1:
             r = random.SystemRandom().randrange(1, n - 1)
 
         # Encrypt plaintext

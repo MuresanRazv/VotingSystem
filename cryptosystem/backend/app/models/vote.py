@@ -1,17 +1,17 @@
 from pydantic import BaseModel, Field
 from bson import ObjectId
-from typing import List
+from typing import Dict, Optional
 
 class Vote(BaseModel):
-    id: ObjectId = Field(default_factory=ObjectId, alias='_id')
-
     class Config:
         allow_population_by_field_name = True
         json_encoders = {
             ObjectId: str
         }
         arbitrary_types_allowed = True
-
+    
+    title: str
+    description: str
+    candidates: Optional[Dict[ObjectId, str]]
     poll_id: ObjectId
-    candidate_ids: List[ObjectId]
     user_id: ObjectId
