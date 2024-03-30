@@ -15,6 +15,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 async def create_user(user: User) -> User:
     user_dict = user.model_dump()
+
+    # check if user with email already exists
+    if await get_user_by_email(user.email) is not None:
+        raise HTTPException(status_code=400, detail="User with this email already exists")
+
     inserted_user = await client_db.users.insert_one(user_dict)
     user._id = inserted_user.inserted_id
     return user
@@ -53,8 +58,6 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)]
 ):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
 async def update_user(user_id: str, user: UpdatedUser) -> User:
@@ -63,9 +66,9 @@ async def update_user(user_id: str, user: UpdatedUser) -> User:
     try:
         result = await client_db.users.update_one({"_id": ObjectId(user_id)}, {"$set": user_dict})
         if result.matched_count == 0:
-            raise HTTPException(status=404, text=f"No user found with ID {user_id}")
+            raise HTTPException(status_code=404, detail=f"No user found with ID {user_id}")
     except Exception as e:
-        raise HTTPException(status=500, text=f"HTTP error occurred while updating user document: {e}")
+        raise HTTPException(status_code=500, detail=f"HTTP error occurred while updating user document: {e}")
     
     return await get_user_by_id(user_id)
 

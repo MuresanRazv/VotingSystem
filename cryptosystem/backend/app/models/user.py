@@ -20,7 +20,7 @@ class User(BaseModel):
     county: Optional[str] = None
     city: Optional[str] = None
     # ObjectId => poll_id, str => decription key
-    polls: Optional[Dict[ObjectId, str]] = None
+    polls: Optional[Dict[str, str]] = None
 
 class UpdatedUser(BaseModel):
     firstname: Optional[str] = None
