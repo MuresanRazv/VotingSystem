@@ -4,6 +4,7 @@
     import { Toast, getToastStore } from '@skeletonlabs/skeleton';
     import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
     import { initializeStores } from '@skeletonlabs/skeleton';
+	import { updateInformation } from "../helper/authentication";
 
     initializeStores();
     const toastStore = getToastStore();
@@ -11,23 +12,11 @@
 	    message: 'Please fill all the fields',
     };
 
-    function updateInformation() {
+    function handleUpdateInformation() {
         if ($user.firstname == '' || $user.lastname == '' || $user.county == '' || $user.county == '') {
             toastStore.trigger(t);
         } else {
-            fetch(`http://127.0.0.1:8000/api/users/${$user._id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                },
-                body: JSON.stringify({
-                    firstname: `${$user.firstname}`,
-                    lastname: `${$user.lastname}`,
-                    county: `${$user.county}`,
-                    city: `${$user.city}`
-                })
-            })
+            updateInformation($user)
             .then(response => {
                 if (response.status == 404) {
                     toastStore.trigger({
@@ -126,6 +115,6 @@
             </select>
         </label>
 
-        <button type="button" class="btn variant-filled" on:click={updateInformation}>Update Information</button>
+        <button type="button" class="btn variant-filled" on:click={handleUpdateInformation}>Update Information</button>
     </div>	
 </div>

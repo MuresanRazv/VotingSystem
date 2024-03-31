@@ -4,7 +4,7 @@
     import user from "../stores/user";
 	import { AppRail, AppRailAnchor, AppRailTile } from "@skeletonlabs/skeleton";
     import User from "./User.svelte";
-	import Polls from "./Polls.svelte";
+	import Polls from "./PollsInformation.svelte";
 
     onMount(() => {
         if (!$userToken) {
@@ -55,15 +55,15 @@
         
         <AppRailTile bind:group={currentTile} name="tile-1" value={0} title="tile-1">
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
-            <span>Tile 1</span>
+            <span>Personal Information</span>
         </AppRailTile>
         <AppRailTile bind:group={currentTile} name="tile-2" value={1} title="tile-2">
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
-            <span>Tile 2</span>
+            <span>Dashboard</span>
         </AppRailTile>
         <AppRailTile bind:group={currentTile} name="tile-3" value={2} title="tile-3">
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
-            <span>Tile 3</span>
+            <span>Manage Polls</span>
         </AppRailTile>
     
         <svelte:fragment slot="trail">

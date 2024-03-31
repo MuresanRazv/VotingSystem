@@ -16,19 +16,13 @@
 
 <script>
 	import { goto } from "$app/navigation";
+	import { login } from "../helper/authentication";
 	import { userToken } from "../stores/user";
     let email = ""
     let password = ""
 
     function handleLogin() {
-        fetch('http://127.0.0.1:8000/api/login/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        })
-        .then(response => response.json())
+        login(email, password)
         .then(data => {
             localStorage.setItem('access_token', data.access_token)
             $userToken
