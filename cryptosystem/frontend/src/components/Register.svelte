@@ -4,44 +4,49 @@
     import { Toast, getToastStore } from '@skeletonlabs/skeleton';
     import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
     import { initializeStores } from '@skeletonlabs/skeleton';
+    import { goto } from "$app/navigation";
+    import { register, login } from "../helper/authentication"
+    import { userToken } from "../stores/user";
 
     initializeStores();
     const toastStore = getToastStore();
     const t: ToastSettings = {
 	    message: 'Please fill all the fields',
     };
+    const p: ToastSettings = {
+        message: 'Passwords do not match',
+    };
 
-    function updateInformation() {
-        if ($user.firstname == '' || $user.lastname == '' || $user.county == '' || $user.county == '') {
+    let password = '';
+    let confirmPassword = '';
+
+    function handleRegister() {
+        if ($user.firstname == '' || $user.lastname == '' || $user.county == '' || $user.county == '' || $user.email == '' || $user.username == '' || password == '') {
             toastStore.trigger(t);
+        } else if (password !== confirmPassword) {
+            toastStore.trigger(p);
         } else {
-            fetch(`http://127.0.0.1:8000/api/users/${$user._id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                },
-                body: JSON.stringify({
-                    firstname: `${$user.firstname}`,
-                    lastname: `${$user.lastname}`,
-                    county: `${$user.county}`,
-                    city: `${$user.city}`
-                })
-            })
+            register($user, password)
             .then(response => {
-                if (response.status == 404) {
+                if (response.status == 409) {
                     toastStore.trigger({
-                        message: 'User not found',
+                        message: 'User already exists',
                     });
-                } else if (response.status == 401) {
+                } else if (response.status == 201) {
                     toastStore.trigger({
-                        message: 'Unauthorized',
+                        message: 'User created successfully',
                     });
-                } else if (response.status == 200) {
-                    toastStore.trigger({
-                        message: 'Information updated successfully',
-                    });
+                    goto('/dashboard');
                 }
+            })
+            .then(data => {
+                login($user.email, password)
+                .then(data => {
+                    localStorage.setItem('access_token', data.access_token)
+                    $userToken
+                    window.location.href = '/dashboard'
+                    goto('/dashboard');
+                })
             })
         }
     }
@@ -84,14 +89,26 @@
     <div class="user-information">
         <label class="label">
             <span>Username</span>
-            <input class="input" type="text" placeholder="Username" bind:value={$user.username} readonly />
+            <input class="input" type="text" placeholder="Username" bind:value={$user.username} required />
         </label>
                         
         <label class="label">
             <span>Email</span>
-            <input class="input" type="text" placeholder="Email" bind:value={$user.email} readonly />
+            <input class="input" type="text" placeholder="Email" bind:value={$user.email} required />
         </label>
                 
+        <label class="label">
+            <span>Password</span>
+            <input class='input {password !== confirmPassword ? "input-warning" : ""}' 
+            type="password" placeholder="Password" bind:value={password} required />
+        </label>
+
+        <label class="label">
+            <span>Confirm Password</span>
+            <input class='input {password !== confirmPassword ? "input-warning" : ""}'
+             type="password" placeholder="Confirm Password" bind:value={confirmPassword} required />
+        </label>
+
         <div class="form-group">
             <label class="label">
                 <span>Name</span>
@@ -126,6 +143,6 @@
             </select>
         </label>
 
-        <button type="button" class="btn variant-filled" on:click={updateInformation}>Update Information</button>
+        <button type="button" class="btn variant-filled" on:click={handleRegister}>Register</button>
     </div>	
 </div>
