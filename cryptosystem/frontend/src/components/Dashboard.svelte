@@ -4,7 +4,9 @@
     import user from "../stores/user";
 	import { AppRail, AppRailAnchor, AppRailTile } from "@skeletonlabs/skeleton";
     import User from "./User.svelte";
-	import Polls from "./PollsInformation.svelte";
+	import PollsInformation from "./PollsInformation.svelte";
+	import ManagePolls from "./ManagePolls.svelte";
+    import { currentTab } from "../stores/dashboard";
 
     onMount(() => {
         if (!$userToken) {
@@ -31,8 +33,6 @@
             .catch(error => console.error('Error:', error))
         }
     })
-
-    let currentTile = 0
 </script>
 
 <style>
@@ -53,15 +53,15 @@
             <AppRailAnchor href="/" >(icon)</AppRailAnchor>
         </svelte:fragment>
         
-        <AppRailTile bind:group={currentTile} name="tile-1" value={0} title="tile-1">
+        <AppRailTile bind:group={$currentTab} name="tile-1" value={0} title="tile-1">
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
             <span>Personal Information</span>
         </AppRailTile>
-        <AppRailTile bind:group={currentTile} name="tile-2" value={1} title="tile-2">
+        <AppRailTile bind:group={$currentTab} name="tile-2" value={1} title="tile-2">
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
             <span>Dashboard</span>
         </AppRailTile>
-        <AppRailTile bind:group={currentTile} name="tile-3" value={2} title="tile-3">
+        <AppRailTile bind:group={$currentTab} name="tile-3" value={2} title="tile-3">
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
             <span>Manage Polls</span>
         </AppRailTile>
@@ -71,10 +71,12 @@
         </svelte:fragment>
     </AppRail>
     <div class="content">
-        {#if currentTile == 0}
+        {#if $currentTab == 0}
             <User />
-        {:else if currentTile == 1}
-            <Polls />
+        {:else if $currentTab == 1}
+            <PollsInformation />
+        {:else if $currentTab == 2}
+            <ManagePolls />
         {/if}
     </div>
 </div>

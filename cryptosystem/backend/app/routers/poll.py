@@ -16,8 +16,8 @@ async def read_polls(user: str = Depends(get_current_active_user)):
     return polls
 
 @router.get("/me", response_model=list[UpdatedPoll])
-async def read_polls_me(user: str = Depends(get_current_active_user)):
-    polls = await get_polls_by_user_id(user)
+async def read_polls_me(user: User = Depends(get_current_active_user)):
+    polls = await get_polls_by_user_id(user.id)
     return polls
 
 @router.get("/{poll_id}", response_model=UpdatedPoll)
