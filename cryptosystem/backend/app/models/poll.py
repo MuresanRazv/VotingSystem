@@ -16,6 +16,8 @@ class Poll(BaseModel):
 
     title: str
     description: str
+    multiple_choice: Optional[bool] = False
+    private: Optional[bool] = False
     # ObjectId => candidate_id, str => encrypted count
     candidates: Optional[Dict[ObjectId, str]] = None
     encryption_key: Optional[str] = None
@@ -30,3 +32,5 @@ class UpdatedPoll(BaseModel):
     description: str
     start_date: datetime
     end_date: datetime
+    multiple_choice: Optional[bool] = False
+    private: Optional[bool] = False

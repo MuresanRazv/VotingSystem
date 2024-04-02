@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models import Poll, UpdatedPoll, User
 from services import create_poll, create_poll_candidate
-from crud import get_current_active_user, get_polls, get_polls_by_user_id, get_poll_by_id, remove_poll_candidate, update_poll_candidate
+from crud import get_current_active_user, get_polls, get_polls_by_user_id, get_poll_by_id, remove_poll_candidate, update_poll_candidate, update_poll
 
 router = APIRouter()
 
@@ -26,6 +26,11 @@ async def read_poll(poll_id: str, user: str = Depends(get_current_active_user)):
     if poll is None:
         raise HTTPException(status_code=404, detail="Poll not found")
     return poll
+
+@router.patch("/{poll_id}", response_model=UpdatedPoll)
+async def update_poll_endpoint(poll_id: str, poll: UpdatedPoll, user: str = Depends(get_current_active_user)):
+    updated_poll = await update_poll(poll_id, poll)
+    return updated_poll
 
 @router.post("/{poll_id}", response_model=UpdatedPoll)
 async def add_candidate_endpoint(poll_id: str, poll: UpdatedPoll, user: str = Depends(get_current_active_user)):

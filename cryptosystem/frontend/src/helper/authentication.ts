@@ -35,9 +35,6 @@ async function updateInformation(user: any) {
             city: `${user.city}`
         })
     })
-    .then(response => {
-        return response.json();
-    })
 }
 
 async function login(email: string, password: string) {
