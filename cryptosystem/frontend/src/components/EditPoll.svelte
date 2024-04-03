@@ -1,10 +1,18 @@
 <script lang="ts">
-	import { SlideToggle } from "@skeletonlabs/skeleton";
+	import { SlideToggle, getModalStore, getToastStore, initializeStores, type ToastSettings, Toast } from "@skeletonlabs/skeleton";
     import type { Poll } from "../helper/polls";
+    import { updatePoll } from "../helper/polls";
+
+    const toastStore = getToastStore();
+    const t: ToastSettings = {
+	    message: 'Poll updated successfully',
+    };
+    
+    const modalStore = getModalStore();
 
     export let poll: Poll;
 
-    function addCandidate() {
+    function appendCandidate() {
         if (!poll.candidates) {
             poll.candidates = [];
         }
@@ -19,7 +27,17 @@
         }
     }
 
-    // TODO - handle api calls for adding and removing candidates (for delete, if the candidate does not exist, just remove it from the list)
+    function handleSave() {
+        updatePoll(poll)
+        .then((response) => {
+            if (response.ok) {
+                modalStore.close();
+            }
+        })
+        .then(() => {
+            toastStore.trigger(t);
+        });
+    }
 </script>
 
 <div class="card max-h-[80vh] w-[80%] p-10 flex flex-col gap-5 overflow-auto">
@@ -50,11 +68,11 @@
         {/each}
     {/if}
 
-    <button class="btn btn-primary variant-soft-surface" on:click={addCandidate}>
+    <button class="btn btn-primary variant-soft-surface" on:click={appendCandidate}>
         <img src="./plus-solid.svg" alt="plus" class="w-5 h-5"/>
     </button>
     
-    <button class="btn btn-primary variant-filled w-[max-content] ml-auto">
+    <button class="btn btn-primary variant-filled w-[max-content] ml-auto" on:click={handleSave}>
         Save
     </button>
 </div>

@@ -1,10 +1,11 @@
-from crud import create_poll as create_poll_crud, create_candidate as create_candidate_crud, create_poll_candidate as create_poll_candidate_crud, get_poll_by_id, get_votes_by_user_id, get_user_by_id, update_user
-from models import Poll, Candidate, UpdatedPoll, Vote
+from crud import create_poll as create_poll_crud, get_poll_by_id, get_votes_by_user_id, get_user_by_id, update_user, update_poll as update_poll_crud
+from models import Poll, Candidate, Vote
 import paillier as Paillier
 from fastapi import HTTPException
+from bson import ObjectId
 from datetime import datetime
 
-async def create_poll(poll_data: UpdatedPoll, user_id: str):
+async def create_poll(poll_data: Poll, user_id: str):
     poll_obj = Poll(**poll_data.model_dump())
     
     # create encryption/decryption keys
@@ -12,8 +13,8 @@ async def create_poll(poll_data: UpdatedPoll, user_id: str):
 
     # encrypt candidate votes count (initially 0)
     if not poll_obj.candidates is None:
-        for candidate_id in poll_obj.candidates:
-            poll_obj.candidates[candidate_id] = await Paillier.encrypt(public_key, 0)
+        for candidate in poll_obj.candidates:
+            candidate.tally = str(await Paillier.encrypt(public_key, 0))
 
     # set encryption key
     poll_obj.encryption_key = str(public_key)
@@ -34,19 +35,22 @@ async def create_poll(poll_data: UpdatedPoll, user_id: str):
     # update user with private key
     await update_user(str(user_id), user)
 
-async def create_poll_candidate(poll_id: str, candidate: Candidate):
-    await create_candidate_crud(candidate)
+async def update_poll(poll_id: str, poll_data: Poll):
     poll = await get_poll_by_id(poll_id)
-    public_key = eval(poll.encryption_key)
+    if poll is None:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    poll.title = poll_data.title
+    poll.description = poll_data.description
+    poll.candidates = poll_data.candidates
+    poll.is_private = poll_data.is_private
+    for candidate in poll.candidates:
+        if (candidate.tally is None):
+            candidate.tally = str(await Paillier.encrypt(eval(poll.encryption_key), 0))
+    
+    poll.updated_at = datetime.now()
 
-    # empty count
-    encrypted_count = await Paillier.encrypt(public_key, 0)
-
-    # add candidate to the poll
-    return await create_poll_candidate_crud(poll_id, candidate.id, encrypted_count)
-
-async def update_poll_candidate(poll_id: str, candidate_id: str, poll: UpdatedPoll):
-    return await update_poll_candidate(poll_id, candidate_id, poll)
+    return await update_poll_crud(poll_id, poll)
 
 async def add_vote(poll_id: str, vote: Vote, user_id: str):
     # check if user already voted
@@ -62,7 +66,5 @@ async def add_vote(poll_id: str, vote: Vote, user_id: str):
     # add vote
     if poll.candidates is not None:
         public_key = eval(poll.encryption_key)
-        for (candidate_id, count) in vote.candidates.items():
-            poll.candidates[candidate_id] = str(await Paillier.add(public_key, int(count), int(poll.candidates[candidate_id])))
-    
-        await update_poll_candidate(poll_id, candidate_id, poll)
+        for voteCandidate, pollCandidate in zip(vote.candidates, poll.candidates):
+            pollCandidate.tally = str(await Paillier.add(public_key, int(pollCandidate.tally), int(voteCandidate.tally)))

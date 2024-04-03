@@ -1,7 +1,7 @@
 <script lang="ts">
     import { currentTab } from "../stores/dashboard";
     import { getUserPolls } from "../helper/polls";
-    import { getModalStore } from '@skeletonlabs/skeleton';
+    import { Toast, getModalStore } from '@skeletonlabs/skeleton';
     import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
     import EditPoll from "./EditPoll.svelte";
 			
@@ -13,6 +13,8 @@
 };
 
 </script>
+
+<Toast />
 
 <div class="flex justify-center overflow-auto max-h-[65vh] my-10">
     {#if $currentTab === 2}

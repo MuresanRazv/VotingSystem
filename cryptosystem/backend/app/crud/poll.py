@@ -1,7 +1,8 @@
 from database.connection import application_db
-from models import Poll, UpdatedPoll
+from models import Poll
 from bson import ObjectId
 from fastapi import HTTPException
+from typing import Dict
 
 async def create_poll(poll: Poll) -> str:
     poll_dict = poll.model_dump()
@@ -9,7 +10,7 @@ async def create_poll(poll: Poll) -> str:
     return str(inserted_poll.inserted_id)
 
 async def get_polls_by_user_id(user_id: str) -> list[Poll]:
-    polls = await application_db.polls.find({"created_by": ObjectId(user_id)}).to_list(length=1000)
+    polls = await application_db.polls.find({"created_by": ObjectId(user_id)}, projection=None).to_list(length=1000)
     return [Poll(**poll) for poll in polls]
 
 async def get_poll_by_id(poll_id: str) -> Poll:
@@ -19,7 +20,7 @@ async def get_poll_by_id(poll_id: str) -> Poll:
     return Poll(**poll_dict)
 
 async def get_polls() -> list[Poll]:
-    polls = await application_db.polls.find().to_list(length=1000)
+    polls = await application_db.polls.find({}, projection=None).to_list(length=1000)
     return [Poll(**poll) for poll in polls]
 
 async def delete_poll(poll_id: str):
@@ -27,23 +28,7 @@ async def delete_poll(poll_id: str):
 
 async def update_poll(poll_id: str, poll: Poll) -> Poll:
     poll_dict = poll.model_dump()
-
-    try:
-        result = await application_db.polls.update_one({"_id": ObjectId(poll_id)}, {"$set": poll_dict})
-        if result.modified_count == 0:
-            raise HTTPException(status_code=404, detail="Poll not found")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Error updating poll")
-
-    return await get_poll_by_id(poll_id)
-
-async def create_poll_candidate(poll_id: str, candidate_id: str, encrypted_count: str):
-    await application_db.polls.update_one({"_id": ObjectId(poll_id)}, {"$set": {"candidates." + candidate_id: encrypted_count}})
-
-async def remove_poll_candidate(poll_id: str, candidate_id: str):
-    await application_db.polls.update_one({"_id": ObjectId(poll_id)}, {"$unset": {"candidates." + candidate_id: ""}})
-
-async def update_poll_candidate(poll_id: str, candidate_id: str, poll: UpdatedPoll):
-    poll_dict = poll.model_dump()
-    await application_db.polls.update_one({"_id": ObjectId(poll_id)}, {"$set": {"candidates." + candidate_id: poll_dict["candidates"][candidate_id]}})
+    updated_poll = await application_db.polls.update_one({"_id": ObjectId(poll_id)}, {"$set": poll_dict})
+    if (updated_poll.modified_count == 0):
+        raise HTTPException(status_code=404, detail="Poll not found")
     return await get_poll_by_id(poll_id)

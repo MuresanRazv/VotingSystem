@@ -1,1 +1,1 @@
-from .poll import create_poll, create_poll_candidate, add_vote
+from .poll import create_poll, add_vote, update_poll

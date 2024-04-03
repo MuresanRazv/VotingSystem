@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from bson import ObjectId
-from typing import Dict, Optional
+from typing import List, Optional
+from models import Candidate
 
 class Vote(BaseModel):
     class Config:
@@ -12,6 +13,6 @@ class Vote(BaseModel):
     
     title: str
     description: str
-    candidates: Optional[Dict[ObjectId, str]]
+    candidates: Optional[List[Candidate]]
     poll_id: ObjectId
     user_id: ObjectId

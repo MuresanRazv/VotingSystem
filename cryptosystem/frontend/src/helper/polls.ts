@@ -1,10 +1,10 @@
 export type Candidate = {
-  _id?: string,
   name: string,
   description: string,
 }
 
 export type Poll = {
+  _id?: string,
   title: string,
   description: string,
   candidates: Candidate[],
@@ -25,39 +25,29 @@ async function getUserPolls() {
   .then(response => response.json())
 }
 
-async function updatePoll(pollId: string, pollData: Poll) {
-  return await fetch(`http://127.0.0.1:8000/api/polls/${pollId}`, {
+async function updatePoll(poll: Poll) {
+  // remove id's from candidates, they're not needed
+  poll.candidates = poll.candidates.map(candidate => {
+    return {
+      name: candidate.name,
+      description: candidate.description
+    }
+  })
+  
+  return await fetch(`http://127.0.0.1:8000/api/polls/${poll._id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     },
-    body: JSON.stringify(pollData)
+    body: JSON.stringify({
+      title: poll.title,
+      description: poll.description,
+      candidates: poll.candidates,
+      is_private: poll.is_private,
+      multiple_choice: poll.multiple_choice
+    })
   })
-  .then(response => response.json())
-}
-
-async function addCandidate(pollId: string, candidate: Candidate) {
-  return await fetch(`http://127.0.0.1:8000/api/polls/${pollId}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-    },
-    body: JSON.stringify(candidate)
-  })
-  .then(response => response.json())
-}
-
-async function removeCandidate(pollId: string, candidateId: string) {
-  return await fetch(`http://127.0.0.1:8000/api/polls/${pollId}/candidates/${candidateId}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-    }
-  })
-  .then(response => response.json())
 }
 
 export { getUserPolls, updatePoll };
