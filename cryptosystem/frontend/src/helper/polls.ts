@@ -12,6 +12,17 @@ async function getUserPolls() {
   .then(response => response.json())
 }
 
+async function getPublicPolls() {
+  return await fetch(`http://127.0.0.1:8000/api/polls`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    }
+  })
+  .then(response => response.json())
+}
+
 async function updatePoll(poll: Poll) {
   if (!poll.candidates) {
     poll.candidates = []
@@ -80,5 +91,5 @@ async function removePoll(poll_id: string) {
   })
 }
 
-export { getUserPolls, updatePoll, createPoll, removePoll };
+export { getUserPolls, updatePoll, createPoll, removePoll, getPublicPolls };
 

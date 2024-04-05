@@ -20,7 +20,7 @@ async def get_poll_by_id(poll_id: str) -> Poll:
     return Poll(**poll_dict)
 
 async def get_polls() -> list[Poll]:
-    polls = await application_db.polls.find({}, projection=None).to_list(length=1000)
+    polls = await application_db.polls.find({"is_private": False}, projection=None).to_list(length=1000)
     return [Poll(**poll) for poll in polls]
 
 async def delete_poll(poll_id: str):

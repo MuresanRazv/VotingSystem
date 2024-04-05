@@ -18,12 +18,12 @@
 
 <Toast />
 
-<div class="flex justify-center overflow-auto max-h-[65vh] my-10">
+<div class="flex justify-center max-h-[65vh] my-10">
     {#if $currentTab === 2}
         {#await $polls}
             <p>Loading...</p>
         {:then currentPolls} 
-            <dl class="list-dl w-3/4 bg-surface-800 rounded-3xl">
+            <dl class="list-dl overflow-auto w-3/4 bg-surface-800 rounded-3xl p-1">
                 {#each currentPolls as poll}
                 <button class='w-[100%] text-left' on:click={() => {
                             modalComponent.props = {
