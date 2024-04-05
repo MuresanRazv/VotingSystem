@@ -1,18 +1,5 @@
-export type Candidate = {
-  name: string,
-  description: string,
-}
+import type { Poll, Candidate } from "../stores/polls"
 
-export type Poll = {
-  _id?: string,
-  title: string,
-  description: string,
-  candidates: Candidate[],
-  created_at: string,
-  updated_at: string,
-  is_private: boolean,
-  multiple_choice: boolean,
-}
 
 async function getUserPolls() {
   return await fetch(`http://127.0.0.1:8000/api/polls/me`, {
@@ -26,6 +13,9 @@ async function getUserPolls() {
 }
 
 async function updatePoll(poll: Poll) {
+  if (!poll.candidates) {
+    poll.candidates = []
+  }
   // remove id's from candidates, they're not needed
   poll.candidates = poll.candidates.map(candidate => {
     return {
@@ -50,5 +40,45 @@ async function updatePoll(poll: Poll) {
   })
 }
 
-export { getUserPolls, updatePoll };
+async function createPoll(poll: Poll) {
+  if (!poll.candidates) {
+    poll.candidates = []
+  }
+  // remove id's from candidates, they're not needed
+  if (poll.candidates) {
+    poll.candidates = poll.candidates.map(candidate => {
+      return {
+        name: candidate.name,
+        description: candidate.description
+      }
+    })
+  }
+  
+  return await fetch(`http://127.0.0.1:8000/api/polls`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    },
+    body: JSON.stringify({
+      title: poll.title,
+      description: poll.description,
+      candidates: poll.candidates,
+      is_private: poll.is_private,
+      multiple_choice: poll.multiple_choice
+    })
+  })  
+}
+
+async function removePoll(poll_id: string) {
+  return await fetch(`http://127.0.0.1:8000/api/polls/${poll_id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    }
+  })
+}
+
+export { getUserPolls, updatePoll, createPoll, removePoll };
 

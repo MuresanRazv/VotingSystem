@@ -1,7 +1,7 @@
 <script>
 	import '../app.pcss';
-	import Header from '../components/Header.svelte';
-	import Footer from '../components/Footer.svelte';
+	import Header from '../components/base/Header.svelte';
+	import Footer from '../components/base/Footer.svelte';
 	import { AppShell } from '@skeletonlabs/skeleton';
 </script>
 

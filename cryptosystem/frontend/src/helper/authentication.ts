@@ -1,4 +1,4 @@
-import type User from "../components/User.svelte";
+import type User from "../components/authentication/User.svelte";
 
 async function register(user: any, password: string) {
     return fetch(`http://127.0.0.1:8000/api/users`, {

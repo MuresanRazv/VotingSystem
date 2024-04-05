@@ -16,8 +16,8 @@
 
 <script>
 	import { goto } from "$app/navigation";
-	import { login } from "../helper/authentication";
-	import { userToken } from "../stores/user";
+	import { login } from "../../helper/authentication";
+	import { userToken } from "../../stores/user";
     let email = ""
     let password = ""
 

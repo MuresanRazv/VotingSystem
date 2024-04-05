@@ -1,12 +1,12 @@
 <script>
 	import { onMount } from "svelte";
-    import { userToken } from "../stores/user";
-    import user from "../stores/user";
+    import { userToken } from "../../stores/user";
+    import user from "../../stores/user";
 	import { AppRail, AppRailAnchor, AppRailTile } from "@skeletonlabs/skeleton";
-    import User from "./User.svelte";
+    import User from "../authentication/User.svelte";
 	import PollsInformation from "./PollsInformation.svelte";
 	import ManagePolls from "./ManagePolls.svelte";
-    import { currentTab } from "../stores/dashboard";
+    import { currentTab } from "../../stores/dashboard";
 
     onMount(() => {
         if (!$userToken) {

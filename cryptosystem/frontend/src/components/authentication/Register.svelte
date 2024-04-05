@@ -1,12 +1,12 @@
 <script lang="ts">
-    import user from "../stores/user";
-    import romaniaCities from "../stores/locations"; 
+    import user from "../../stores/user";
+    import romaniaCities from "../../stores/locations";
     import { Toast, getToastStore } from '@skeletonlabs/skeleton';
     import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
     import { initializeStores } from '@skeletonlabs/skeleton';
     import { goto } from "$app/navigation";
-    import { register, login } from "../helper/authentication"
-    import { userToken } from "../stores/user";
+    import { register, login } from "../../helper/authentication";
+    import { userToken } from "../../stores/user";
 
     initializeStores();
     const toastStore = getToastStore();

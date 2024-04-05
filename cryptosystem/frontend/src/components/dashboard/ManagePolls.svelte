@@ -1,28 +1,30 @@
 <script lang="ts">
-    import { currentTab } from "../stores/dashboard";
-    import { getUserPolls } from "../helper/polls";
+    import { currentTab } from "../../stores/dashboard";
+    import { getUserPolls } from "../../helper/polls";
     import { Toast, getModalStore } from '@skeletonlabs/skeleton';
     import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
     import EditPoll from "./EditPoll.svelte";
+	import { polls } from "../../stores/polls";
 			
     const modalStore = getModalStore();
     const modalComponent: ModalComponent = { ref: EditPoll };
     const modal: ModalSettings = {
-	type: 'component',
-    component: modalComponent,
-};
+        type: 'component',
+        component: modalComponent,
+    };
 
+    $polls = getUserPolls();
 </script>
 
 <Toast />
 
 <div class="flex justify-center overflow-auto max-h-[65vh] my-10">
     {#if $currentTab === 2}
-        {#await getUserPolls()}
+        {#await $polls}
             <p>Loading...</p>
-        {:then polls} 
-            <dl class="list-dl w-3/4">
-                {#each polls as poll}
+        {:then currentPolls} 
+            <dl class="list-dl w-3/4 bg-surface-800 rounded-3xl">
+                {#each currentPolls as poll}
                 <button class='w-[100%] text-left' on:click={() => {
                             modalComponent.props = {
                                 poll: poll
@@ -39,8 +41,17 @@
                         <img src="./arrow-right-solid.svg" alt="arrow" class="w-5 h-5"/>
                     </div>
                 </button>
-                {/each}       
-            </dl> 
+                {/each}
+                <button class="btn btn-primary variant-soft-surface w-[100%]" on:click={() => {
+                        modalComponent.props = {
+                            poll: {}
+                        }
+                        modalStore.trigger(modal)
+                    }
+                }>
+                    <img src="./plus-solid.svg" alt="plus" class="w-5 h-5"/>
+                </button>
+            </dl>
         {/await}
     {/if}
 </div>

@@ -1,7 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
     import { AppBar } from '@skeletonlabs/skeleton';
-    import { userToken } from '../stores/user';
+    import { userToken } from '../../stores/user';
 	import { browser } from '$app/environment';
 </script>
 

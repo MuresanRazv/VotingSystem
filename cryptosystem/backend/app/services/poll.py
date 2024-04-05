@@ -1,4 +1,4 @@
-from crud import create_poll as create_poll_crud, get_poll_by_id, get_votes_by_user_id, get_user_by_id, update_user, update_poll as update_poll_crud
+from crud import create_poll as create_poll_crud, get_poll_by_id, get_votes_by_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud
 from models import Poll, Candidate, Vote
 import paillier as Paillier
 from fastapi import HTTPException
@@ -68,3 +68,10 @@ async def add_vote(poll_id: str, vote: Vote, user_id: str):
         public_key = eval(poll.encryption_key)
         for voteCandidate, pollCandidate in zip(vote.candidates, poll.candidates):
             pollCandidate.tally = str(await Paillier.add(public_key, int(pollCandidate.tally), int(voteCandidate.tally)))
+
+async def delete_poll(poll_id: str):
+    poll = await get_poll_by_id(poll_id)
+    if poll is None:
+        raise HTTPException(status_code=404, detail="Poll not found")
+
+    return await delete_poll_crud(poll_id)
