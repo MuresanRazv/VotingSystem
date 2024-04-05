@@ -10,9 +10,7 @@ async function addVote(poll_id: string, vote: Vote) {
         }
     });
 
-    console.log(vote);
-
-    const response = await fetch(`http://localhost:8000/api/votes/${poll_id}/vote`, {
+    return await fetch(`http://localhost:8000/api/votes/${poll_id}/vote`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -24,7 +22,7 @@ async function addVote(poll_id: string, vote: Vote) {
             candidates: vote.candidates
         }),
     });
-    return response.json();
+
 }
 
 export { addVote };

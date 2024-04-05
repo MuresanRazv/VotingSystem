@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getModalStore } from "@skeletonlabs/skeleton";
+	import { Toast, getModalStore } from "@skeletonlabs/skeleton";
     import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { getPublicPolls } from "../../helper/polls";
     import { polls } from "../../stores/polls";
@@ -14,6 +14,8 @@
 
     $polls = getPublicPolls();
 </script>
+
+<Toast />
 
 <div class="flex flex-row overflow-auto max-h-[65vh] m-10 gap-2">
     <div class="flex flex-row w-3/4 bg-surface-900 rounded-3xl">

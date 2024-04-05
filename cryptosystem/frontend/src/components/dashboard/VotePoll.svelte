@@ -4,6 +4,16 @@
 	import user from "../../stores/user";
 	import type { Vote } from "../../stores/votes";
 	import { addVote } from "../../helper/votes";
+	import { getModalStore, getToastStore, type ToastSettings } from "@skeletonlabs/skeleton";
+
+    const modalStore = getModalStore();
+    const toastStore = getToastStore();
+    const submittedVote: ToastSettings = {
+	    message: 'Vote submitted successfully. Thank you for participating! 🎉',
+    };
+    const errorVote: ToastSettings = {
+        message: 'There was an error submitting your vote. Please try again.',
+    };
 
     export let poll: Poll;
     let inputType = poll.multiple_choice ? 'checkbox' : 'radio';
@@ -23,7 +33,18 @@
 
     function handleSubmitVote() {
         if (poll._id) {
-            addVote(poll._id, vote);
+            addVote(poll._id, vote)
+            .then((response) => {
+                modalStore.close();
+                return response;
+            })
+            .then((response) => {
+                if (response.ok) {
+                    toastStore.trigger(submittedVote);
+                } else {
+                    toastStore.trigger(errorVote);
+                }
+            })
         }
     }
 
@@ -51,7 +72,6 @@
                 <label class="flex items-center space-x-2">
                     <input class="{inputType}" type="{inputType}" id="{String(i)}" name="candidate" value="{candidate.name}" on:change={() => {
                         handleChooseCandidate(i);
-                        console.log(vote);
                     }} />
                     <p>{candidate.name}</p>
                 </label>
