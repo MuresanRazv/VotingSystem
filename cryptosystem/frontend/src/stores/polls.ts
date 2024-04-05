@@ -3,6 +3,7 @@ import { writable } from 'svelte/store';
 export type Candidate = {
     name: string,
     description: string,
+    tally?: string,
   }
   
 
