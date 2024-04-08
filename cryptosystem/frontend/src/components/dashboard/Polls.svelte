@@ -4,15 +4,25 @@
 	import { getPublicPolls } from "../../helper/polls";
     import { polls } from "../../stores/polls";
     import VotePoll from "./VotePoll.svelte";
+	import { getUserVotes } from "../../helper/votes";
+	import { votes } from "../../stores/votes";
+    import user from "../../stores/user";
+    import PollStatus from "./PollStatus.svelte";
     
     const modalStore = getModalStore();
     const modalComponent: ModalComponent = { ref: VotePoll };
-    const modal: ModalSettings = {
+    const statusModalComponent: ModalComponent = { ref: PollStatus };
+    const pollModal: ModalSettings = {
         type: 'component',
         component: modalComponent,
     };
+    const pollStatusModal: ModalSettings = {
+        type: 'component',
+        component: statusModalComponent,
+    };
 
     $polls = getPublicPolls();
+    $votes = getUserVotes($user._id);
 </script>
 
 <Toast />
@@ -30,11 +40,10 @@
                                 modalComponent.props = {
                                     poll: poll
                                 }
-                                modalStore.trigger(modal)
+                                modalStore.trigger(pollModal)
                             }
                         }>
-                            <div class="space-x-4 hover:bg-surface-500 cursor-pointer"> 
-                                <span class="badge bg-primary-500">💀</span>
+                            <div class="space-x-4 hover:bg-surface-500 cursor-pointer">
                                 <span class="flex-auto">
                                     <dt>{poll.title}</dt>
                                     <dd>{poll.description}</dd>
@@ -60,7 +69,29 @@
     </div>
     <div class="flex flex-col w-1/4 bg-surface-900 rounded-3xl">
         <div class="flex flex-col p-10 gap-2">
-            <h3>My Votes</h3>
+            <h3>Voted Polls</h3>
+            {#await $votes}
+                <p>Loading...</p>
+            {:then userVotes} 
+                <dl class="list-dl overflow-auto bg-surface-800 rounded-3xl p-1">
+                    {#each userVotes as vote}
+                        <button class='w-[100%] text-left'  on:click={() => {
+                            modalComponent.props = {
+                                poll: vote.poll
+                            }
+                            modalStore.trigger(pollStatusModal)
+                        }}>
+                            <div class="space-x-4 hover:bg-surface-500 cursor-pointer">
+                                <span class="flex-auto">
+                                    <dt>{vote.poll.title}</dt>
+                                    <dd>{vote.poll.description}</dd>
+                                </span>
+                                <img src="./arrow-right-solid.svg" alt="arrow" class="w-5 h-5"/>
+                            </div>
+                        </button>
+                    {/each}
+                </dl>
+            {/await}
         </div>
     </div>
 </div>

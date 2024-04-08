@@ -1,6 +1,6 @@
-from models import User, Vote
+from models import User, Vote, ResponseVote
 from crud import get_current_active_user, get_poll_by_id, get_votes_by_poll_id
-from services import add_vote, create_vote
+from services import add_vote, create_vote, get_votes_by_user_id
 from fastapi import APIRouter, HTTPException, Depends
 
 router = APIRouter()
@@ -17,4 +17,9 @@ async def vote(poll_id: str, vote: Vote, user: User = Depends(get_current_active
 @router.get("/{poll_id}/votes", response_model=list[Vote])
 async def read_votes(poll_id: str, user: User = Depends(get_current_active_user)):
     votes = await get_votes_by_poll_id(poll_id)
+    return votes
+
+@router.get("/{user_id}", response_model=list[ResponseVote])
+async def read_votes_by_user(user_id: str, user: User = Depends(get_current_active_user)):
+    votes = await get_votes_by_user_id(user_id)
     return votes

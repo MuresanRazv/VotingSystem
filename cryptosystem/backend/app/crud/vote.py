@@ -15,8 +15,14 @@ async def get_votes_by_poll_id(poll_id: str) -> list[Vote]:
     return [Vote(**vote) for vote in votes]
 
 async def get_votes_by_user_id(user_id: str) -> list[Vote]:
-    votes = await client_db.votes.find({"user_id": user_id}).to_list(length=1000)
+    votes = await client_db.votes.find({"user_id": str(user_id)}).to_list(length=1000)
     return [Vote(**vote) for vote in votes]
+
+async def get_vote_by_poll_and_user_id(poll_id: str, user_id: str) -> Vote:
+    vote_dict = await client_db.votes.find_one({"poll_id": str(poll_id), "user_id": str(user_id)})
+    if (vote_dict is None):
+        return None
+    return Vote(**vote_dict)
 
 async def get_vote_by_id(vote_id: str) -> Vote:
     vote_dict = await client_db.votes.find_one({"_id": ObjectId(vote_id)})

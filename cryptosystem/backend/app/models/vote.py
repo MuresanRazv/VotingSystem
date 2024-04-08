@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from bson import ObjectId
 from typing import List, Optional
-from models import Candidate
+from models import Candidate, Poll
 
 class Vote(BaseModel):
     id: ObjectId = Field(default_factory=ObjectId, alias='_id')
@@ -16,3 +16,6 @@ class Vote(BaseModel):
     candidates: Optional[List[Candidate]]
     poll_id: str
     user_id: str
+
+class ResponseVote(BaseModel):
+    poll: Optional[Poll]

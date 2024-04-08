@@ -5,6 +5,10 @@
 	import type { Vote } from "../../stores/votes";
 	import { addVote } from "../../helper/votes";
 	import { getModalStore, getToastStore, type ToastSettings } from "@skeletonlabs/skeleton";
+    import { polls } from "../../stores/polls";
+    import { votes } from "../../stores/votes";
+    import { getPublicPolls } from "../../helper/polls";
+    import { getUserVotes } from "../../helper/votes";
 
     const modalStore = getModalStore();
     const toastStore = getToastStore();
@@ -35,6 +39,8 @@
         if (poll._id) {
             addVote(poll._id, vote)
             .then((response) => {
+                $polls = getPublicPolls();
+                $votes = getUserVotes($user._id);
                 modalStore.close();
                 return response;
             })

@@ -8,4 +8,4 @@ export type Vote = {
     candidates: Candidate[],
 }
 
-export const votes = writable<Vote[]>([]);
+export const votes = writable<Vote[] | Promise<any>>([]);

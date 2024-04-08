@@ -25,4 +25,15 @@ async function addVote(poll_id: string, vote: Vote) {
 
 }
 
-export { addVote };
+async function getUserVotes(user_id: string) {
+    return await fetch(`http://localhost:8000/api/votes/${user_id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        },
+    })
+    .then(response => response.json())
+}
+
+export { addVote, getUserVotes };
