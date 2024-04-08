@@ -1,5 +1,9 @@
 <script>
-
+    import { getResults } from "../../helper/polls"
+    // TODO: get the polls statistics from the backend
+    // go through each user poll and get the results, just display all of them initially
+    // after implementing results, display them conditionally, maybe in a modal or a dropdown or something
+    // also make endpoints for general statistics of all polls, or maybe top polls by votes and etc
 </script>
 
 <style>
@@ -24,7 +28,6 @@
 
 <div class="polls-container">
     <div class="votes-chart">
-
     </div>
     <div class="top-polls">
 

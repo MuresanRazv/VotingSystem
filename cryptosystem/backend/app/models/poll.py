@@ -19,6 +19,7 @@ class Poll(BaseModel):
     description: Optional[str] = None
     multiple_choice: Optional[bool] = False
     is_private: Optional[bool] = False
+    is_revealed: Optional[bool] = False
     candidates: Optional[List[Candidate]]
     encryption_key: Optional[str] = None
     start_date: Optional[datetime] = None
@@ -26,3 +27,10 @@ class Poll(BaseModel):
     created_by: Optional[ObjectId] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+class PollResults(BaseModel):
+    poll_id: str
+    total_votes: int
+    candidates: List[Candidate]
+    county_statistics: dict
+    votes_this_week: dict

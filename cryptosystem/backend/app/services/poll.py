@@ -1,6 +1,6 @@
 from crud import create_poll as create_poll_crud, get_poll_by_id, get_vote_by_poll_and_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud, get_polls as get_polls_crud
-from models import Poll, Candidate, Vote
-from paillier import add, generate_keys, encrypt
+from models import Poll, Candidate, Vote, PollResults
+from paillier import add, generate_keys, encrypt, decrypt
 from fastapi import HTTPException
 from bson import ObjectId
 from datetime import datetime
@@ -83,3 +83,28 @@ async def get_polls(user_id: str):
             newPolls.append(poll)
 
     return newPolls
+
+async def get_results(poll_id: str, user_polls: dict):
+    poll = await get_poll_by_id(poll_id)
+    pollResults = PollResults(
+        poll_id=poll_id,
+        total_votes=0,
+        candidates=poll.candidates,
+        county_statistics={},
+        votes_this_week={}
+    )
+
+    if poll is None:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    if poll_id in user_polls or poll.is_revealed:
+        private_key = eval(user_polls[poll_id])
+        public_key = eval(poll.encryption_key)
+        total = 0
+        for candidate in pollResults.candidates:
+            candidate.tally = str(await decrypt(public_key, private_key, int(candidate.tally)))
+            total += int(candidate.tally)
+    else:
+        raise HTTPException(status_code=403, detail="Poll results are not revealed")
+    
+    return pollResults
