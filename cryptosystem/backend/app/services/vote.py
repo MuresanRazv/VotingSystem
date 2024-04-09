@@ -29,4 +29,5 @@ async def get_votes_by_user_id(user_id: str):
     for vote in votes:
         poll = await get_poll_by_id(vote.poll_id)
         responseVotes.append(ResponseVote(poll=poll))
+
     return responseVotes

@@ -102,5 +102,16 @@ async function getResults(poll_id: string) {
   .then(response => response.json())
 }
 
-export { getUserPolls, updatePoll, createPoll, removePoll, getPublicPolls, getResults };
+async function getGeneralResults() {
+  return await fetch(`http://127.0.0.1:8000/api/polls/results`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    }
+  })
+  .then(response => response.json())
+}
+
+export { getUserPolls, updatePoll, createPoll, removePoll, getPublicPolls, getResults, getGeneralResults };
 

@@ -1,5 +1,5 @@
-from crud import create_poll as create_poll_crud, get_poll_by_id, get_vote_by_poll_and_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud, get_polls as get_polls_crud
-from models import Poll, Candidate, Vote, PollResults
+from crud import create_poll as create_poll_crud, get_poll_by_id, get_vote_by_poll_and_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud, get_polls as get_polls_crud, get_votes_by_poll_id
+from models import Poll, Candidate, Vote, PollResults, User
 from paillier import add, generate_keys, encrypt, decrypt
 from fastapi import HTTPException
 from bson import ObjectId
@@ -24,13 +24,14 @@ async def create_poll(poll_data: Poll, user_id: str):
     poll_obj.created_by = user_id
 
     # create the poll
-    await create_poll_crud(poll_obj)
+    poll_id = await create_poll_crud(poll_obj)
+    poll = await get_poll_by_id(poll_id)
 
     # set private key for user
     user = await get_user_by_id(user_id)
     if user.polls is None:
         user.polls = {}
-    user.polls[str(poll_obj.id)] = str(private_key)
+    user.polls[str(poll.id)] = str(private_key)
 
     # update user with private key
     await update_user(str(user_id), user)
@@ -84,27 +85,79 @@ async def get_polls(user_id: str):
 
     return newPolls
 
-async def get_results(poll_id: str, user_polls: dict):
+async def get_results(poll_id: str, user: User):
     poll = await get_poll_by_id(poll_id)
     pollResults = PollResults(
         poll_id=poll_id,
         total_votes=0,
         candidates=poll.candidates,
         county_statistics={},
-        votes_this_week={}
+        votes_this_week={
+            'monday': 0,
+            'tuesday': 0,
+            'wednesday': 0,
+            'thursday': 0,
+            'friday': 0,
+            'saturday': 0,
+            'sunday': 0
+        }
     )
 
     if poll is None:
         raise HTTPException(status_code=404, detail="Poll not found")
-    
-    if poll_id in user_polls or poll.is_revealed:
-        private_key = eval(user_polls[poll_id])
-        public_key = eval(poll.encryption_key)
-        total = 0
-        for candidate in pollResults.candidates:
-            candidate.tally = str(await decrypt(public_key, private_key, int(candidate.tally)))
-            total += int(candidate.tally)
+
+    if poll_id in user.polls or poll.is_revealed:
+        votes = await get_votes_by_poll_id(poll_id)
+        pollResults.total_votes = len(votes)
+        pollResults.votes_this_week = add_votes_by_days(pollResults.votes_this_week, votes)
+
+        # go through each vote, read user and add to county statistics
+        for vote in votes:
+            user = await get_user_by_id(vote.user_id)
+            if user.county in pollResults.county_statistics:
+                pollResults.county_statistics[user.county] += 1
+            else:
+                pollResults.county_statistics[user.county] = 1
     else:
         raise HTTPException(status_code=403, detail="Poll results are not revealed")
     
     return pollResults
+
+async def get_general_results(user_polls: dict):
+    polls = await get_polls_crud()
+    pollResults = PollResults(
+        total_votes=0,
+        candidates=[],
+        county_statistics={},
+        votes_this_week={
+            'monday': 0,
+            'tuesday': 0,
+            'wednesday': 0,
+            'thursday': 0,
+            'friday': 0,
+            'saturday': 0,
+            'sunday': 0
+        }
+    )
+
+    for poll in polls:
+        if str(poll.id) in user_polls or poll.is_revealed:
+            votes = await get_votes_by_poll_id(poll.id)
+            pollResults.total_votes += len(votes)
+            pollResults.votes_this_week = add_votes_by_days(pollResults.votes_this_week, votes)
+            # go through each vote, read user and add to county statistics
+            for vote in votes:
+                user = await get_user_by_id(vote.user_id)
+                if user.county in pollResults.county_statistics:
+                    pollResults.county_statistics[user.county] += 1
+                else:
+                    pollResults.county_statistics[user.county] = 1
+    
+    return pollResults
+
+def add_votes_by_days(votes_this_week ,votes: list[Vote]):
+    for vote in votes:
+        created_at = vote.created_at
+        day = created_at.strftime('%A').lower()
+        votes_this_week[day] += 1
+    return votes_this_week

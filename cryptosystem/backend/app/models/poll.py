@@ -29,7 +29,7 @@ class Poll(BaseModel):
     updated_at: Optional[datetime] = None
 
 class PollResults(BaseModel):
-    poll_id: str
+    poll_id: Optional[str] = None
     total_votes: int
     candidates: List[Candidate]
     county_statistics: dict
