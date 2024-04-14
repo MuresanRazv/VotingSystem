@@ -27,7 +27,8 @@
                 {#each currentPolls as poll}
                 <button class='w-[100%] text-left' on:click={() => {
                             modalComponent.props = {
-                                poll: poll
+                                poll: poll,
+                                canEditCandidates: poll.candidates.length == 0
                             }
                             modalStore.trigger(modal)
                         }
