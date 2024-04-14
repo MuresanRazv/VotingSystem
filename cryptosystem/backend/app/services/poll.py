@@ -1,4 +1,4 @@
-from crud import create_poll as create_poll_crud, get_poll_by_id, get_vote_by_poll_and_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud, get_polls as get_polls_crud, get_votes_by_poll_id
+from crud import create_poll as create_poll_crud, get_poll_by_id, get_vote_by_poll_and_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud, get_polls as get_polls_crud, get_votes_by_poll_id, delete_votes_by_poll_id
 from models import Poll, Candidate, Vote, PollResults, User
 from paillier import add, generate_keys, encrypt, decrypt
 from fastapi import HTTPException
@@ -70,7 +70,16 @@ async def delete_poll(poll_id: str):
     poll = await get_poll_by_id(poll_id)
     if poll is None:
         raise HTTPException(status_code=404, detail="Poll not found")
+    
+    # remove poll from creator user
+    user = await get_user_by_id(str(poll.created_by))
+    user.polls.pop(str(ObjectId(poll_id)))
+    await update_user(str(poll.created_by), user)
 
+    # remove votes
+    await delete_votes_by_poll_id(poll_id)
+
+    # delete poll
     return await delete_poll_crud(poll_id)
 
 async def get_polls(user_id: str):
@@ -87,6 +96,7 @@ async def get_polls(user_id: str):
 
 async def get_results(poll_id: str, user: User):
     poll = await get_poll_by_id(poll_id)
+    print(user)
     pollResults = PollResults(
         poll_id=poll_id,
         total_votes=0,
@@ -113,11 +123,15 @@ async def get_results(poll_id: str, user: User):
 
         # go through each vote, read user and add to county statistics
         for vote in votes:
-            user = await get_user_by_id(vote.user_id)
-            if user.county in pollResults.county_statistics:
+            currentUser = await get_user_by_id(vote.user_id)
+            if currentUser.county in pollResults.county_statistics:
                 pollResults.county_statistics[user.county] += 1
             else:
                 pollResults.county_statistics[user.county] = 1
+
+        # decrypt candidates tallies
+        for candidate in pollResults.candidates:
+            candidate.tally = await decrypt(eval(poll.encryption_key), eval(user.polls[poll_id]), eval(candidate.tally))
     else:
         raise HTTPException(status_code=403, detail="Poll results are not revealed")
     

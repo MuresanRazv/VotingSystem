@@ -1,71 +1,73 @@
 <script lang="ts">
-    import { getGeneralResults, getResults } from "../../helper/polls";
+    import { getGeneralResults, getResults, getUserPolls } from "../../helper/polls";
     import '@carbon/charts-svelte/styles.css'
     import { browser } from '$app/environment';
-    import { BarChartSimple, PieChart } from '@carbon/charts-svelte'
-    // TODO: get the polls statistics from the backend
-    // go through each user poll and get the results, just display all of them initially
-    // after implementing results, display them conditionally, maybe in a modal or a dropdown or something
-    // also make endpoints for general statistics of all polls, or maybe top polls by votes and etc
+    import ResultsCharts from "./ResultsCharts.svelte";
+    import ResultsCandidates from "./ResultsCandidates.svelte";
+    import { Autocomplete } from '@skeletonlabs/skeleton';
+    import type { AutocompleteOption, PopupSettings } from '@skeletonlabs/skeleton';
+    import { popup } from "@skeletonlabs/skeleton";
+	import type { Poll } from "../../stores/polls";
 
+    let searchInput = '';
+    let searchOptions: AutocompleteOption<string>[] = [];
+    let popupSettings: PopupSettings = {
+        event: 'focus-click',
+        target: 'popupAutocomplete',
+        placement: 'bottom',
+    };
+    getUserPolls().then((polls) => {
+        searchOptions = polls.map((poll: Poll) => {
+            return {
+                value: poll.title,
+                label: poll.title,
+                id: poll._id    
+            }
+        });
+    });
+    function onInputSelection(event: CustomEvent<AutocompleteOption<string>>) {
+        searchInput = event.detail.label;
+        // @ts-ignore
+        results = getResults(event.detail.id);
+    }
+    
+    let results = getGeneralResults();
+    
 </script>
 
-<style>
-    .top-polls {
-        display: flex;
-        width: 40%;
-        height: 100%;
-    }
-</style>
-
-<div class="flex flex-row h-[100%]">
-    <div class="flex w-[60%] h-[100%]">
-        {#await getGeneralResults()}
-            <p>Loading...</p>
-        {:then results}
-            {#if results}
-                <div class="m-10 bg-surface-900 h-[max-content] rounded-3xl p-5">
-                    <PieChart data={Object.entries(results.county_statistics).map(([key, value]) => {
-                        return {
-                            group: key,
-                            value: value
-                        }
-                    })} options={{
-                        title: 'County Statistics',
-                        height: '400px',
-                        width: '400px',
-                        resizable: true,
-                        legend: {
-                            position: 'bottom'
-                        },
-                        theme: "g100"
-                    }} />
-                </div>
-                <div class="m-10 bg-surface-900 h-[max-content] rounded-3xl p-5">
-                    <BarChartSimple data={Object.entries(results.votes_this_week).map(([key, value]) => {
-                        return {
-                            date: new Date(key),
-                            group: 'Votes This Week',
-                            value: value
-                        }
-                    })} options={{
-                        title: 'Votes This Week',
-                        axes: {
-                            left: {
-                            mapsTo: 'value'
-                            },
-                            bottom: {
-                            mapsTo: 'date',
-                    
-                            }
-                        },
-                        height: '400px'
-                    }} />
-                </div>
-            {/if}
-        {/await}
+<div class="flex flex-col w-[100%] m-10 gap-10">
+    <div class="w-[25%]">
+        <input
+            class="input autocomplete"
+            type="search"
+            name="autocomplete-search"
+            bind:value={searchInput}
+            on:input={() => {            
+                if (searchInput === '') {
+                    results = getGeneralResults();
+                }
+            }}
+            placeholder="Search..."
+            use:popup={popupSettings}
+        />
+        <div data-popup="popupAutocomplete" class="bg-surface-900 p-2 rounded-3xl z-[9999]">
+            <Autocomplete
+                bind:input={searchInput}
+                options={searchOptions}
+                on:selection={onInputSelection}
+            />
+        </div>
     </div>
-    <div class="top-polls">
-
-    </div>
+    {#await results}
+        <p>Loading...</p>
+    {:then results}
+        <div class="flex flex-row h-[100%]">
+            <div class="flex w-[60%] h-[100%] gap-10">                                        
+                <ResultsCharts {results} />            
+            </div>
+        </div>
+        {#if results.candidates.length > 0}
+            <ResultsCandidates candidates={results.candidates} />
+        {/if}        
+    {/await}
 </div>

@@ -34,10 +34,10 @@ async def delete_vote(vote_id: str):
     await client_db.votes.delete_one({"_id": ObjectId(vote_id)})
 
 async def delete_votes_by_poll_id(poll_id: str):
-    await client_db.votes.delete_many({"poll_id": ObjectId(poll_id)})
+    await client_db.votes.delete_many({"poll_id": str(poll_id)})
 
 async def delete_votes_by_user_id(user_id: str):
-    await client_db.votes.delete_many({"user_id": ObjectId(user_id)})
+    await client_db.votes.delete_many({"user_id": str(user_id)})
 
 async def update_vote(vote_id: str, vote: Vote) -> Vote:
     vote_dict = vote.model_dump()

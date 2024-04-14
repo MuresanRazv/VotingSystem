@@ -22,7 +22,7 @@ async def read_polls_me(user: User = Depends(get_current_active_user)):
 
 @router.get("/{poll_id}/results", response_model=PollResults)
 async def read_poll_results(poll_id: str, user: User = Depends(get_current_active_user)):
-    return await get_results(poll_id, user.polls)
+    return await get_results(poll_id, user)
 
 @router.get("/results", response_model=PollResults)
 async def read_all_poll_results(user: User = Depends(get_current_active_user)):

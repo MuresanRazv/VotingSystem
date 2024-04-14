@@ -33,8 +33,8 @@ export type PollResults = {
   _id?: string,
   total_votes: number,
   candidates: Candidate[],
-  countyStatistics: CountyStatistics[],
-  votesThisWeek: VoteByDay[]
+  county_statistics: CountyStatistics[],
+  votes_this_week: VoteByDay[]
 }
 
 export const polls = writable<Poll[] | Promise<any>>([]);
