@@ -43,12 +43,8 @@ async def update_poll(poll_id: str, poll_data: Poll):
     
     poll.title = poll_data.title
     poll.description = poll_data.description
-    poll.candidates = poll_data.candidates
     poll.is_private = poll_data.is_private
     poll.multiple_choice = poll_data.multiple_choice
-    for candidate in poll.candidates:
-        if (candidate.tally is None):
-            candidate.tally = str(await encrypt(eval(poll.encryption_key), 0))
     
     poll.updated_at = datetime.now()
 
@@ -125,9 +121,9 @@ async def get_results(poll_id: str, user: User):
         for vote in votes:
             currentUser = await get_user_by_id(vote.user_id)
             if currentUser.county in pollResults.county_statistics:
-                pollResults.county_statistics[user.county] += 1
+                pollResults.county_statistics[currentUser.county] += 1
             else:
-                pollResults.county_statistics[user.county] = 1
+                pollResults.county_statistics[currentUser.county] = 1
 
         # decrypt candidates tallies
         for candidate in pollResults.candidates:

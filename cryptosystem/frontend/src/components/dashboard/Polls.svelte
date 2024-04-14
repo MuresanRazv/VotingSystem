@@ -35,23 +35,26 @@
                 <p>Loading...</p>
             {:then publicPolls} 
                 <dl class="list-dl overflow-auto bg-surface-800 rounded-3xl p-1">
-                    {#each publicPolls as poll}
-                        <button class='w-[100%] text-left' on:click={() => {
-                                modalComponent.props = {
-                                    poll: poll
+                    {#if publicPolls.length === 0}
+                        <p class="p-5">No public polls available</p>
+                    {:else}
+                        {#each publicPolls as poll}
+                            <button class='w-[100%] text-left' on:click={() => {
+                                    modalComponent.props = {
+                                        poll: poll
+                                    }
+                                    modalStore.trigger(pollModal)
                                 }
-                                modalStore.trigger(pollModal)
-                            }
-                        }>
-                            <div class="space-x-4 hover:bg-surface-500 cursor-pointer">
-                                <span class="flex-auto">
-                                    <dt>{poll.title}</dt>
-                                    <dd>{poll.description}</dd>
-                                </span>
-                                <img src="./arrow-right-solid.svg" alt="arrow" class="w-5 h-5"/>
-                            </div>
-                        </button>
-                    {/each}
+                            }>
+                                <div class="space-x-4 hover:bg-surface-500 cursor-pointer">
+                                    <span class="flex-auto">
+                                        <dt>{poll.title}</dt>                                        
+                                    </span>
+                                    <img src="./arrow-right-solid.svg" alt="arrow" class="w-5 h-5"/>
+                                </div>
+                            </button>
+                        {/each}
+                    {/if}
                 </dl>
             {/await}
         </div>
@@ -83,8 +86,7 @@
                         }}>
                             <div class="space-x-4 hover:bg-surface-500 cursor-pointer">
                                 <span class="flex-auto">
-                                    <dt>{vote.poll.title}</dt>
-                                    <dd>{vote.poll.description}</dd>
+                                    <dt>{vote.poll.title}</dt>                                    
                                 </span>
                                 <img src="./arrow-right-solid.svg" alt="arrow" class="w-5 h-5"/>
                             </div>

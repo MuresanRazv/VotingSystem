@@ -32,11 +32,9 @@
                             modalStore.trigger(modal)
                         }
                     }>
-                    <div class="space-x-4 hover:bg-surface-500 cursor-pointer"> 
-                        <span class="badge bg-primary-500">💀</span>
+                    <div class="space-x-4 hover:bg-surface-500 cursor-pointer">                     
                         <span class="flex-auto">
-                            <dt>{poll.title}</dt>
-                            <dd>{poll.description}</dd>
+                            <dt>{poll.title}</dt>                            
                         </span>
                         <img src="./arrow-right-solid.svg" alt="arrow" class="w-5 h-5"/>
                     </div>

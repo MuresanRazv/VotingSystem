@@ -18,9 +18,13 @@
 
     export let poll: Poll;
 
+    let canEditCandidates = true;
+
     function appendCandidate() {
         if (!poll.candidates) {
             poll.candidates = [];
+        } else {
+            canEditCandidates = false;
         }
         poll.candidates = [...poll.candidates, {name: '', description: ''}];
     }
@@ -108,17 +112,21 @@
     {#if poll.candidates && poll.candidates.length > 0}
         {#each poll.candidates as candidate, i}
             <div class="flex gap-5">
-                <input class="input {!candidate.name ? 'input-warning': ''}" type="text" placeholder="Name" bind:value={candidate.name} required />
-                <input class="input {!candidate.description ? 'input-warning': ''}" type="text" placeholder="Description" bind:value={candidate.description} required />
-                <button class="btn variant-filled-warning" on:click={() => removeCandidate(i)}>Remove</button>
+                <input class="input {!candidate.name ? 'input-warning': ''}" type="text" placeholder="Name" bind:value={candidate.name} readonly={canEditCandidates} required />
+                <input class="input {!candidate.description ? 'input-warning': ''}" type="text" placeholder="Description" bind:value={candidate.description} readonly={canEditCandidates} required />
+                {#if !canEditCandidates}
+                    <button class="btn variant-filled-warning" on:click={() => removeCandidate(i)}>Remove</button>
+                {/if}                
             </div>
         {/each}
     {/if}
 
-    <button class="btn btn-primary variant-soft-surface" on:click={appendCandidate}>
-        <img src="./plus-solid.svg" alt="plus" class="w-5 h-5"/>
-    </button>
-    
+    {#if !canEditCandidates}
+        <button class="btn btn-primary variant-soft-surface" on:click={appendCandidate}>
+            <img src="./plus-solid.svg" alt="plus" class="w-5 h-5"/>
+        </button>
+    {/if}
+
     <div class="flex justify-between">
         <button class="btn btn-primary variant-filled-warning w-[max-content]" on:click={handleDelete}>
             Delete
