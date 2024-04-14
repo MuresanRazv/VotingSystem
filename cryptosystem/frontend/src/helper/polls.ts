@@ -9,7 +9,15 @@ async function getUserPolls() {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     }
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok.");
+    }
+    return response.json();
+  })
+  .catch(error => {
+    window.location.href = '/login';
+  });
 }
 
 async function getPublicPolls() {
@@ -110,7 +118,15 @@ async function getGeneralResults() {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     }
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok.");
+    }
+    return response.json();
+  })
+  .catch(error => {
+    window.location.href = '/login';
+  });
 }
 
 export { getUserPolls, updatePoll, createPoll, removePoll, getPublicPolls, getResults, getGeneralResults };

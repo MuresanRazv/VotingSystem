@@ -33,7 +33,16 @@ async function getUserVotes(user_id: string) {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         },
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch user votes');
+        }
+
+        return response.json();
+    })
+    .catch(error => {
+        window.location.href = '/login';
+    });
 }
 
 export { addVote, getUserVotes };
