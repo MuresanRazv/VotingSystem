@@ -77,6 +77,9 @@
                 <div class="placeholder animate-pulse" />
             {:then userVotes} 
                 <dl class="list-dl overflow-auto bg-surface-800 rounded-3xl p-1">
+                    {#if userVotes.length === 0}
+                        <p class="p-5">No voted polls available</p>
+                    {/if}
                     {#each userVotes as vote}
                         <button class='w-[100%] text-left'  on:click={() => {
                             statusModalComponent.props = {
