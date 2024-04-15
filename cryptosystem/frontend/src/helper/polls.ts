@@ -109,7 +109,7 @@ async function getResults(poll_id: string) {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     }
   })
-  .then(response => response.json())
+  .then(response => response.json());
 }
 
 async function getGeneralResults() {
@@ -131,5 +131,15 @@ async function getGeneralResults() {
   });
 }
 
-export { getUserPolls, updatePoll, createPoll, removePoll, getPublicPolls, getResults, getGeneralResults };
+async function publishPoll(poll_id: string) {
+  return await fetch(`http://127.0.0.1:8000/api/polls/${poll_id}/publish`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    }
+  })
+}
+
+export { getUserPolls, updatePoll, createPoll, removePoll, getPublicPolls, getResults, getGeneralResults, publishPoll };
 

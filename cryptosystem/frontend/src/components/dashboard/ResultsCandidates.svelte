@@ -1,61 +1,92 @@
 <script lang="ts">
-    import { polls, type Candidate } from "../../stores/polls";
+    import { polls, type Candidate, type PollResults } from "../../stores/polls";
+    import { publishPoll } from "../../helper/polls";
+    import { Toast } from "@skeletonlabs/skeleton";
+    import type { ToastSettings } from "@skeletonlabs/skeleton";
+    import { getToastStore } from "@skeletonlabs/skeleton";
 
-    export let candidates: Candidate[] = [];
-    export let pollStatus: string = '';
+    export let results: PollResults | Promise<PollResults>;
+
+    const toastStore = getToastStore();
+    const published: ToastSettings = {
+	    message: 'Poll updated successfully',
+    };
+    const failed: ToastSettings = {
+        message: 'Failed to publish results',
+    };
+
+    function handlePublishResults(pollId: string, pollStatus: string) {
+        publishPoll(pollId)
+        .then((response) => {
+            if (response.status === 200) {
+                pollStatus = 'published';
+                toastStore.trigger(published);
+            } else {
+                toastStore.trigger(failed);
+            }
+        })
+    }
 </script>
 
-<div class="flex w-[100%] gap-10">
-    <div class="bg-surface-800 p-10 rounded-3xl w-[50%]">
-        <h2>
-            Candidates Statistics
-        </h2>
-        
-        <div class="flex flex-row gap-10">
-            {#each candidates as candidate}
-                <div class="h-[max-content] p-2">
-                    <h3>
-                        {candidate.name}
-                    </h3>
-                    {#if candidate.tally}
-                        <p>
-                            {candidate.tally} {parseInt(candidate.tally) === 1 ? 'vote' : 'votes'}
-                        </p>
-                    {:else}
-                        <p>
-                            No votes
-                        </p>
-                    {/if}
+<Toast />
+
+{#await results}
+    <div class="placeholder animate-pulse" />
+{:then results}
+    {#if results.candidates.length > 0}
+        <div class="flex w-[100%] gap-10">
+            <div class="bg-surface-800 p-10 rounded-3xl w-[50%]">
+                <h2>
+                    Candidates Statistics
+                </h2>
+                
+                <div class="flex flex-row gap-10">
+                    {#each results.candidates as candidate}
+                        <div class="h-[max-content] p-2">
+                            <h3>
+                                {candidate.name}
+                            </h3>
+                            {#if candidate.tally}
+                                <p>
+                                    {candidate.tally} {parseInt(candidate.tally) === 1 ? 'vote' : 'votes'}
+                                </p>
+                            {:else}
+                                <p>
+                                    No votes
+                                </p>
+                            {/if}
+                        </div>
+                    {/each}
                 </div>
-            {/each}
-        </div>
-    </div>
-    <div class="flex flex-col gap-5 bg-surface-800 p-10 rounded-3xl w-[50%]">
-        <h2>
-            {#if pollStatus}
-                {#if pollStatus == 'in_progress'}
-                    Poll Status: <strong 
-                        class="text-yellow-500">
-                        In Progress
-                    </strong>
-                {:else}
-                    Poll Status: <strong 
-                        class="text-green-500">
-                        {pollStatus[0].toUpperCase() + pollStatus.slice(1)}
-                    </strong>
+            </div>
+            <div class="flex flex-col gap-5 bg-surface-800 p-10 rounded-3xl w-[50%]">
+                <h2>
+                    {#if results.status}
+                        {#if results.status == 'in_progress'}
+                            Poll Status: <strong 
+                                class="text-yellow-500">
+                                In Progress
+                            </strong>
+                        {:else}
+                            Poll Status: <strong 
+                                class="text-green-500">
+                                {results.status[0].toUpperCase() + results.status.slice(1)}
+                            </strong>
+                        {/if}
+                    {:else}
+                        Poll Status: <strong class="text-red-500">Not available</strong>
+                    {/if}
+                </h2>
+                {#if results.status}
+                    {#if results.status == 'completed' || results.status == 'in_progress'}
+                        <button class="btn btn-primary variant-filled w-[max-content]" disabled={results.status != 'completed'} on:click={() => {if (results._id) {handlePublishResults(results._id, results.status)}}}>
+                            Publish Results
+                        </button>
+                    {:else if results.status == 'published'}
+                        <p>Results are published.</p>
+                    {/if}
                 {/if}
-            {:else}
-                Poll Status: <strong class="text-red-500">Not available</strong>
-            {/if}
-        </h2>
-        {#if pollStatus}
-            {#if pollStatus == 'completed' || pollStatus == 'in_progress'}
-                <button class="btn btn-primary variant-filled w-[max-content]" disabled={pollStatus != 'completed'}>
-                    Publish Results
-                </button>
-            {:else if pollStatus == 'published'}
-                <p>Results are published.</p>
-            {/if}
-        {/if}
-    </div>
-</div>
+            </div>
+        </div>
+    {/if}
+{/await}

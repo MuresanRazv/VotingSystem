@@ -27,12 +27,12 @@
 
 <Toast />
 
-<div class="flex flex-row overflow-auto max-h-[65vh] m-10 gap-2">
-    <div class="flex flex-row w-3/4 bg-surface-900 rounded-3xl">
+<div class="flex flex-col overflow-auto max-h-[65vh] m-10 gap-2">
+    <div class="flex flex-row w-[100%] bg-surface-900 rounded-3xl">
         <div class="flex flex-col w-4/6 p-10 gap-5">
             <h3>Public polls</h3>
             {#await $polls}
-                <p>Loading...</p>
+                <div class="placeholder animate-pulse" />
             {:then publicPolls} 
                 <dl class="list-dl overflow-auto bg-surface-800 rounded-3xl p-1">
                     {#if publicPolls.length === 0}
@@ -70,17 +70,17 @@
             </label>
         </div>
     </div>
-    <div class="flex flex-col w-1/4 bg-surface-900 rounded-3xl">
+    <div class="flex flex-col w-[100%] bg-surface-900 rounded-3xl">
         <div class="flex flex-col p-10 gap-2">
             <h3>Voted Polls</h3>
             {#await $votes}
-                <p>Loading...</p>
+                <div class="placeholder animate-pulse" />
             {:then userVotes} 
                 <dl class="list-dl overflow-auto bg-surface-800 rounded-3xl p-1">
                     {#each userVotes as vote}
                         <button class='w-[100%] text-left'  on:click={() => {
-                            modalComponent.props = {
-                                poll: vote.poll
+                            statusModalComponent.props = {
+                                poll_id: vote.poll._id
                             }
                             modalStore.trigger(pollStatusModal)
                         }}>

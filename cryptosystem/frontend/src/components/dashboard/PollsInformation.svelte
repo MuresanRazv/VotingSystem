@@ -65,14 +65,11 @@
             />
         </div>
     </div>
-    {#await results}
-        <p>Loading...</p>
-    {:then results}
-        <div class="flex w-[100%] h-[100%] gap-10">                                
-            <ResultsCharts {results} />
-        </div>
-        {#if results.candidates.length > 0}
-            <ResultsCandidates candidates={results.candidates} pollStatus={results.status} />
-        {/if}        
-    {/await}
+
+    <div class="flex w-[100%] h-[100%] gap-10">                                
+        <ResultsCharts {results} showBarChart={true} />
+    </div>
+    <ResultsCandidates {results} />
+
+
 </div>

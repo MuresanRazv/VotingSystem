@@ -83,7 +83,7 @@ async def delete_poll(poll_id: str):
     return await delete_poll_crud(poll_id)
 
 async def get_polls(user_id: str):
-    polls = await get_polls_crud()
+    polls = await get_polls_crud({"is_private": False, "status": "in_progress"})
     newPolls = []
 
     for poll in polls:
@@ -115,7 +115,7 @@ async def get_results(poll_id: str, user: User):
     if poll is None:
         raise HTTPException(status_code=404, detail="Poll not found")
 
-    if poll_id in user.polls or poll.is_revealed:
+    if (user.polls and poll_id in user.polls) or poll.status == 'published':
         votes = await get_votes_by_poll_id(poll_id)
         pollResults.total_votes = len(votes)
         pollResults.votes_this_week = add_votes_by_days(pollResults.votes_this_week, votes)
@@ -129,16 +129,17 @@ async def get_results(poll_id: str, user: User):
             else:
                 pollResults.county_statistics[currentUser.county] = 1
 
-        # decrypt candidates tallies
-        for candidate in pollResults.candidates:
-            candidate.tally = await decrypt(eval(poll.encryption_key), eval(user.polls[poll_id]), eval(candidate.tally))
+        # decrypt candidates tallies if not published
+        if (poll.status != 'published'):
+            for candidate in pollResults.candidates:
+                candidate.tally = await decrypt(eval(poll.encryption_key), eval(user.polls[poll_id]), eval(candidate.tally))
     else:
-        raise HTTPException(status_code=403, detail="Poll results are not revealed")
+        raise HTTPException(status_code=403, detail={"message": "Poll results are not published yet", "status": poll.status})
     
     return pollResults
 
-async def get_general_results(user_polls: dict):
-    polls = await get_polls_crud()
+async def get_general_results(user_polls: dict, user_id: str):
+    polls = await get_polls_crud({"created_by": ObjectId(user_id)})
     pollResults = PollResults(
         total_votes=0,
         candidates=[],
@@ -155,7 +156,7 @@ async def get_general_results(user_polls: dict):
     )
 
     for poll in polls:
-        if str(poll.id) in user_polls or poll.is_revealed:
+        if (user_polls and str(poll.id) in user_polls) or poll.status=='published':
             votes = await get_votes_by_poll_id(poll.id)
             pollResults.total_votes += len(votes)
             pollResults.votes_this_week = add_votes_by_days(pollResults.votes_this_week, votes)
@@ -190,3 +191,16 @@ async def update_status():
         if (poll.end_date < datetime.now()):
             poll.status = 'completed'
             await update_poll_crud(poll.id, poll)
+
+async def publish_poll(poll_id: str, user: User):
+    poll = await get_poll_by_id(poll_id)
+
+    if poll is None:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    # decrypt candidates tallies
+    for candidate in poll.candidates:
+        candidate.tally = str(await decrypt(eval(poll.encryption_key), eval(user.polls[poll_id]), eval(candidate.tally)))
+
+    poll.status = 'published'
+    return await update_poll_crud(poll_id, poll)
