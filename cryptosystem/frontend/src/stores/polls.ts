@@ -16,6 +16,8 @@ export type Poll = {
   updated_at: string,
   is_private: boolean,
   multiple_choice: boolean,
+  start_date: string,
+  end_date: string,
 }
 
 export type CountyStatistics = {

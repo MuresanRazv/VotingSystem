@@ -1,12 +1,16 @@
-from crud import create_poll as create_poll_crud, get_poll_by_id, get_vote_by_poll_and_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud, get_polls as get_polls_crud, get_votes_by_poll_id, delete_votes_by_poll_id
+from crud import create_poll as create_poll_crud, get_poll_by_id, get_vote_by_poll_and_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud, get_polls as get_polls_crud, get_votes_by_poll_id, delete_votes_by_poll_id, get_polls_by_status
 from models import Poll, Candidate, Vote, PollResults, User
 from paillier import add, generate_keys, encrypt, decrypt
 from fastapi import HTTPException
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, timedelta, date
+from typing import List
 
 async def create_poll(poll_data: Poll, user_id: str):
     poll_obj = Poll(**poll_data.model_dump())
+    
+    # set status
+    poll_obj.status = 'in_progress'
     
     # create encryption/decryption keys
     public_key, private_key = await generate_keys()
@@ -165,9 +169,24 @@ async def get_general_results(user_polls: dict):
     
     return pollResults
 
-def add_votes_by_days(votes_this_week ,votes: list[Vote]):
+def get_current_week_range() -> tuple:
+    today = datetime.today()
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+    return start_of_week, end_of_week
+
+def add_votes_by_days(votes_this_week: dict, votes: List[Vote]):
+    start_of_week, end_of_week = get_current_week_range()
     for vote in votes:
-        created_at = vote.created_at
-        day = created_at.strftime('%A').lower()
-        votes_this_week[day] += 1
+        if start_of_week.date() <= vote.created_at.date() <= end_of_week.date():
+            day = vote.created_at.strftime('%A').lower()
+            votes_this_week[day] += 1
     return votes_this_week
+
+async def update_status():
+    polls = await get_polls_by_status('in_progress')
+
+    for poll in polls:
+        if (poll.end_date < datetime.now()):
+            poll.status = 'completed'
+            await update_poll_crud(poll.id, poll)

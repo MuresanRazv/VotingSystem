@@ -27,6 +27,7 @@ class Poll(BaseModel):
     created_by: Optional[ObjectId] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    status: Optional[str] = None
 
 class PollResults(BaseModel):
     poll_id: Optional[str] = None

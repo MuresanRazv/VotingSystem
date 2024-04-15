@@ -36,8 +36,9 @@
 </script>
 
 <div class="flex flex-col w-[100%] m-10 gap-10">
-    <div class="w-[25%]">
-        <input
+    <div class="flex w-[30%]">
+        <div class="w-[90%]">
+            <input
             class="input autocomplete"
             type="search"
             name="autocomplete-search"
@@ -49,7 +50,13 @@
             }}
             placeholder="Search..."
             use:popup={popupSettings}
-        />
+            />
+        </div>
+        <div class="w-[10%]">
+            <button on:click={() => {searchInput = ''; results=getGeneralResults();}} class="btn btn-primary variant-soft-surface mt-0.5 ml-2 p-3 {searchInput !== '' ? 'visible opacity-100': 'invisible opacity-0'} transition ease-in-out delay-150" >
+                <img src="./x-solid.svg" class="w-3 h-3" alt="Clear text" />
+            </button>
+        </div>
         <div data-popup="popupAutocomplete" class="bg-surface-900 p-2 rounded-3xl z-[9999]">
             <Autocomplete
                 bind:input={searchInput}

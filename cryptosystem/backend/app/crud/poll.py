@@ -23,6 +23,10 @@ async def get_polls() -> list[Poll]:
     polls = await application_db.polls.find({"is_private": False}, projection=None).to_list(length=1000)
     return [Poll(**poll) for poll in polls]
 
+async def get_polls_by_status(status: str) -> list[Poll]:
+    polls = await application_db.polls.find({"status": status}, projection=None).to_list(length=1000)
+    return [Poll(**poll) for poll in polls]
+
 async def delete_poll(poll_id: str):
     await application_db.polls.delete_one({"_id": ObjectId(poll_id)})
 

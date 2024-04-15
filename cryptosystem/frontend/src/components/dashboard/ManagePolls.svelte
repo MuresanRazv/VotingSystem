@@ -28,7 +28,7 @@
                 <button class='w-[100%] text-left' on:click={() => {
                             modalComponent.props = {
                                 poll: poll,
-                                canEditCandidates: poll.candidates.length == 0
+                                canEdit: false
                             }
                             modalStore.trigger(modal)
                         }
@@ -43,7 +43,8 @@
                 {/each}
                 <button class="btn btn-primary variant-soft-surface w-[100%]" on:click={() => {
                         modalComponent.props = {
-                            poll: {}
+                            poll: {},
+                            canEdit: true
                         }
                         modalStore.trigger(modal)
                     }

@@ -3,6 +3,12 @@
     import { polls, type Poll } from "../../stores/polls";
     import { createPoll, getUserPolls, removePoll, updatePoll } from "../../helper/polls";
 
+    // TODO add date picker for start-date/end-date of Poll and handle it in the backend
+    // TODO handle case when poll has ended and creator wants to show the results
+    // TODO then handle case for voter when poll has ended (he might see the results if the creator chooses to do so, and if
+    // not, deal with that as well).
+    // TODO handle status changes in frontend/backend so that voter can know what is the status of the poll
+
     const toastStore = getToastStore();
     const updated: ToastSettings = {
 	    message: 'Poll updated successfully',
@@ -17,7 +23,12 @@
     const modalStore = getModalStore();
 
     export let poll: Poll;
-    export let canEditCandidates = true;
+    export let canEdit: boolean;
+
+    if (poll.start_date && poll.end_date) {
+        poll.start_date = poll.start_date.split('T')[0];
+        poll.end_date = poll.end_date.split('T')[0];
+    }
 
     function appendCandidate() {
         if (!poll.candidates) {
@@ -110,20 +121,30 @@
     {#if poll.candidates && poll.candidates.length > 0}
         {#each poll.candidates as candidate, i}
             <div class="flex gap-5">
-                <input class="input {!candidate.name ? 'input-warning': ''}" type="text" placeholder="Name" bind:value={candidate.name} readonly={!canEditCandidates} required />
-                <input class="input {!candidate.description ? 'input-warning': ''}" type="text" placeholder="Description" bind:value={candidate.description} readonly={!canEditCandidates} required />
-                {#if canEditCandidates}
+                <input class="input {!candidate.name ? 'input-warning': ''}" type="text" placeholder="Name" bind:value={candidate.name} readonly={!canEdit} required />
+                <input class="input {!candidate.description ? 'input-warning': ''}" type="text" placeholder="Description" bind:value={candidate.description} readonly={!canEdit} required />
+                {#if canEdit}
                     <button class="btn variant-filled-warning" on:click={() => removeCandidate(i)}>Remove</button>
                 {/if}                
             </div>
         {/each}
     {/if}
 
-    {#if canEditCandidates}
+    {#if canEdit}
         <button class="btn btn-primary variant-soft-surface" on:click={appendCandidate}>
             <img src="./plus-solid.svg" alt="plus" class="w-5 h-5"/>
         </button>
     {/if}
+
+    <label class="label">
+        <span>Start Date</span>
+        <input type="date" class="input" readonly={!canEdit} bind:value={poll.start_date} />
+    </label>
+    
+    <label class="label">
+        <span>End Date</span>
+        <input type="date" class="input" readonly={!canEdit} bind:value={poll.end_date} />
+    </label>
 
     <div class="flex justify-between">
         <button class="btn btn-primary variant-filled-warning w-[max-content]" on:click={handleDelete}>

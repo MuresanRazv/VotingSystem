@@ -1,8 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models import Poll, User, Candidate, PollResults
-from services import create_poll, update_poll, delete_poll, get_polls, get_results, get_general_results
+from services import create_poll, update_poll, delete_poll, get_polls, get_results, get_general_results, update_status
 from crud import get_current_active_user, get_polls_by_user_id, get_poll_by_id
-from typing import List
+from fastapi_utilities import repeat_at
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename='update_status.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
 
 router = APIRouter()
 
@@ -46,3 +50,12 @@ async def delete_poll_endpoint(poll_id: str, user: User = Depends(get_current_ac
     if poll is None:
         raise HTTPException(status_code=404, detail="Poll not found")
     await delete_poll(poll_id)
+
+@router.on_event("startup")
+@repeat_at(cron='0 7 * * *', logger=logger)
+async def poll_results_scheduler():
+    try:
+        await update_status()
+        logger.info("Poll status updated")
+    except Exception as e:
+        logger.error(f"Error updating poll status: {e}")

@@ -84,7 +84,9 @@ async function createPoll(poll: Poll) {
       description: poll.description,
       candidates: poll.candidates,
       is_private: poll.is_private,
-      multiple_choice: poll.multiple_choice
+      multiple_choice: poll.multiple_choice,
+      start_date: poll.start_date,
+      end_date: poll.end_date
     })
   })  
 }
