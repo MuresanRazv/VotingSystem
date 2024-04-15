@@ -35,3 +35,4 @@ class PollResults(BaseModel):
     candidates: List[Candidate]
     county_statistics: dict
     votes_this_week: dict
+    status: Optional[str] = None

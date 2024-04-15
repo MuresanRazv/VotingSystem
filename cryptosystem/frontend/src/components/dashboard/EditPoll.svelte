@@ -3,7 +3,6 @@
     import { polls, type Poll } from "../../stores/polls";
     import { createPoll, getUserPolls, removePoll, updatePoll } from "../../helper/polls";
 
-    // TODO add date picker for start-date/end-date of Poll and handle it in the backend
     // TODO handle case when poll has ended and creator wants to show the results
     // TODO then handle case for voter when poll has ended (he might see the results if the creator chooses to do so, and if
     // not, deal with that as well).

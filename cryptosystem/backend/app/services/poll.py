@@ -96,7 +96,6 @@ async def get_polls(user_id: str):
 
 async def get_results(poll_id: str, user: User):
     poll = await get_poll_by_id(poll_id)
-    print(user)
     pollResults = PollResults(
         poll_id=poll_id,
         total_votes=0,
@@ -120,6 +119,7 @@ async def get_results(poll_id: str, user: User):
         votes = await get_votes_by_poll_id(poll_id)
         pollResults.total_votes = len(votes)
         pollResults.votes_this_week = add_votes_by_days(pollResults.votes_this_week, votes)
+        pollResults.status = poll.status
 
         # go through each vote, read user and add to county statistics
         for vote in votes:

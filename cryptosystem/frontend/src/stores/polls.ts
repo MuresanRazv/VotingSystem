@@ -18,6 +18,7 @@ export type Poll = {
   multiple_choice: boolean,
   start_date: string,
   end_date: string,
+  status: string,
 }
 
 export type CountyStatistics = {

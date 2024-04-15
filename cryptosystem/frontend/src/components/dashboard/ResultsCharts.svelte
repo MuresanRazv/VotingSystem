@@ -11,7 +11,7 @@
 </script>
 
 {#if results}
-    <div class="bg-surface-900 h-[max-content] rounded-3xl p-5">
+    <div class="bg-surface-800 h-[max-content] w-[60%] rounded-3xl p-5">
         <BarChartSimple data={Object.entries(results.votes_this_week).map(([key, value]) => {
             return {
                 group: key,
@@ -30,12 +30,12 @@
                 }
             },
             height: '400px',
-            width: '60vw',
+            width: '100%',
             resizable: true,
             theme: "g100",
         }} />
     </div>
-    <div class="bg-surface-900 h-[max-content] rounded-3xl p-5">
+    <div class="bg-surface-800 h-[max-content] w-[40%] rounded-3xl p-5">
         <PieChart data={Object.entries(results.county_statistics).map(([key, value]) => {
             return {
                 group: key,
@@ -44,7 +44,7 @@
         })} options={{
             title: 'County Statistics',
             height: '400px',
-            width: '22vw',
+            width: '100%',
             resizable: true,
             legend: {
                 position: 'bottom'

@@ -7,7 +7,7 @@
     import { Autocomplete } from '@skeletonlabs/skeleton';
     import type { AutocompleteOption, PopupSettings } from '@skeletonlabs/skeleton';
     import { popup } from "@skeletonlabs/skeleton";
-	import type { Poll } from "../../stores/polls";
+	import { polls, type Poll } from "../../stores/polls";
 
     let searchInput = '';
     let searchOptions: AutocompleteOption<string>[] = [];
@@ -35,7 +35,7 @@
     
 </script>
 
-<div class="flex flex-col w-[100%] m-10 gap-10">
+<div class="flex flex-col m-10 gap-10">
     <div class="flex w-[30%]">
         <div class="w-[90%]">
             <input
@@ -52,7 +52,7 @@
             use:popup={popupSettings}
             />
         </div>
-        <div class="w-[10%]">
+        <div>
             <button on:click={() => {searchInput = ''; results=getGeneralResults();}} class="btn btn-primary variant-soft-surface mt-0.5 ml-2 p-3 {searchInput !== '' ? 'visible opacity-100': 'invisible opacity-0'} transition ease-in-out delay-150" >
                 <img src="./x-solid.svg" class="w-3 h-3" alt="Clear text" />
             </button>
@@ -68,13 +68,11 @@
     {#await results}
         <p>Loading...</p>
     {:then results}
-        <div class="flex flex-row h-[100%]">
-            <div class="flex w-[60%] h-[100%] gap-10">                                        
-                <ResultsCharts {results} />            
-            </div>
+        <div class="flex w-[100%] h-[100%] gap-10">                                
+            <ResultsCharts {results} />
         </div>
         {#if results.candidates.length > 0}
-            <ResultsCandidates candidates={results.candidates} />
+            <ResultsCandidates candidates={results.candidates} pollStatus={results.status} />
         {/if}        
     {/await}
 </div>
