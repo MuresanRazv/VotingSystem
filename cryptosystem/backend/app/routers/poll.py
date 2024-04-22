@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models import Poll, User, Candidate, PollResults
-from services import create_poll, update_poll, delete_poll, get_polls, get_results, get_general_results, update_status, publish_poll
+from services import create_poll, update_poll, delete_poll, get_polls, get_results, get_general_results, update_status, publish_poll, get_private_poll
 from crud import get_current_active_user, get_polls_by_user_id, get_poll_by_id
 from fastapi_utilities import repeat_at
 import logging
@@ -23,6 +23,11 @@ async def read_polls(user: User = Depends(get_current_active_user)):
 async def read_polls_me(user: User = Depends(get_current_active_user)):
     polls = await get_polls_by_user_id(user.id)
     return polls
+
+@router.get("/private/{poll_code}", response_model=Poll)
+async def read_poll_by_code(poll_code: str, user: User = Depends(get_current_active_user)):
+    poll = await get_private_poll(poll_code)
+    return poll
 
 @router.get("/{poll_id}/results", response_model=PollResults)
 async def read_poll_results(poll_id: str, user: User = Depends(get_current_active_user)):

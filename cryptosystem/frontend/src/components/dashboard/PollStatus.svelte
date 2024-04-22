@@ -36,7 +36,7 @@
     });
 </script>
 
-<div class="flex flex-col bg-surface-900 rounded-3xl p-10 gap-5">
+<div class="flex flex-col bg-surface-900 rounded-3xl p-10 gap-5 max-h-[80vh] overflow-scroll">
     {#if published && results}
         <h3>🏆 Winner: {winner}</h3>
         <ResultsCharts {results} showBarChart={false} />

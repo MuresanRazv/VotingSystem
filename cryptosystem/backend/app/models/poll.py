@@ -19,6 +19,7 @@ class Poll(BaseModel):
     description: Optional[str] = None
     multiple_choice: Optional[bool] = False
     is_private: Optional[bool] = False
+    private_code: Optional[str] = None
     candidates: Optional[List[Candidate]]
     encryption_key: Optional[str] = None
     start_date: Optional[datetime] = None

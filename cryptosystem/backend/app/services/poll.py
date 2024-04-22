@@ -1,16 +1,31 @@
-from crud import create_poll as create_poll_crud, get_poll_by_id, get_vote_by_poll_and_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud, get_polls as get_polls_crud, get_votes_by_poll_id, delete_votes_by_poll_id, get_polls_by_status
+from crud import create_poll as create_poll_crud, get_poll_by_id, get_vote_by_poll_and_user_id, get_user_by_id, update_user, update_poll as update_poll_crud, delete_poll as delete_poll_crud, get_polls as get_polls_crud, get_votes_by_poll_id, delete_votes_by_poll_id, get_polls_by_status, get_poll_by_code
 from models import Poll, Candidate, Vote, PollResults, User
 from paillier import add, generate_keys, encrypt, decrypt
 from fastapi import HTTPException
 from bson import ObjectId
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 from typing import List
+import string
+import random
+
+async def generate_poll_code(length):
+    characters = string.ascii_letters + string.digits
+    code = ''.join(random.choices(characters, k=length))
+    return code
 
 async def create_poll(poll_data: Poll, user_id: str):
     poll_obj = Poll(**poll_data.model_dump())
     
     # set status
     poll_obj.status = 'in_progress'
+
+    # generate private code
+    if poll_obj.is_private:
+        poll_obj.private_code = await generate_poll_code(6)
+
+        while await get_poll_by_code(poll_obj.private_code):
+            poll_obj.private_code = await generate_poll_code(6)
+
     
     # create encryption/decryption keys
     public_key, private_key = await generate_keys()
@@ -93,6 +108,13 @@ async def get_polls(user_id: str):
             newPolls.append(poll)
 
     return newPolls
+
+async def get_private_poll(poll_code: str):
+    poll = await get_poll_by_code(poll_code)
+    if poll is None:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    return poll
 
 async def get_results(poll_id: str, user: User):
     poll = await get_poll_by_id(poll_id)

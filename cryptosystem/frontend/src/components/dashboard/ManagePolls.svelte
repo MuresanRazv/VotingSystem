@@ -30,21 +30,28 @@
                     </div>
                 {/if}
                 {#each currentPolls as poll}
-                <button class='w-[100%] text-left' on:click={() => {
+                
+                    <div class="space-x-4">
+                        <button class='p-2 hover:bg-surface-500 rounded-3xl'>
+                            <img src="./share-from-square-regular.svg" alt="arrow" class="w-5 h-5"/>
+                        </button>
+                        <button class='w-[100%] text-left' on:click={() => {
                             modalComponent.props = {
                                 poll: poll,
                                 canEdit: false
+                                }
+                                modalStore.trigger(modal)
                             }
-                            modalStore.trigger(modal)
-                        }
-                    }>
-                    <div class="space-x-4 hover:bg-surface-500 cursor-pointer">                     
-                        <span class="flex-auto">
-                            <dt>{poll.title}</dt>                            
-                        </span>
-                        <img src="./arrow-right-solid.svg" alt="arrow" class="w-5 h-5"/>
+                        }>
+                        <div class='hover:bg-surface-500 cursor-pointer'>
+                            <span class="flex-auto">
+                                <dt>{poll.title}</dt>                            
+                            </span>
+                            <img src="./arrow-right-solid.svg" alt="arrow" class="w-5 h-5"/>
+                        </div>
+                    </button>
                     </div>
-                </button>
+                
                 {/each}
                 <button class="btn btn-primary variant-soft-surface w-[100%]" on:click={() => {
                         modalComponent.props = {

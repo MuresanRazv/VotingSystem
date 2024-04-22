@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Toast, getModalStore } from "@skeletonlabs/skeleton";
-    import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
-	import { getPublicPolls } from "../../helper/polls";
+	import { Toast, getModalStore, getToastStore } from "@skeletonlabs/skeleton";
+    import type { ModalComponent, ModalSettings, ToastSettings } from '@skeletonlabs/skeleton';
+	import { getPublicPolls, getPrivatePoll } from "../../helper/polls";
     import { polls } from "../../stores/polls";
     import VotePoll from "./VotePoll.svelte";
 	import { getUserVotes } from "../../helper/votes";
@@ -23,6 +23,32 @@
 
     $polls = getPublicPolls();
     $votes = getUserVotes($user._id);
+
+    let privateCode = '';
+    const toastStore = getToastStore();
+    const t: ToastSettings = {
+	    message: 'Invalid code! Please enter a valid code.',
+    };
+    function handleJoin() {
+        if (privateCode.length === 6) {
+            getPrivatePoll(privateCode)
+            .then(response => response.json())
+            .then((response: any) => {
+                if (response.detail) {
+                    throw response.detail;
+                }
+                modalComponent.props = {
+                    poll: response
+                }
+                modalStore.trigger(pollModal)
+            })
+            .catch(() => {
+                toastStore.trigger(t);
+            });
+        } else {
+            toastStore.trigger(t);
+        }
+    }
 </script>
 
 <Toast />
@@ -64,8 +90,8 @@
             <label class="label">
                 <span>Join by code</span>
                 <div class="flex gap-1">
-                    <input class="input" type="text" placeholder="xxxxxx" />
-                    <button class="btn btn-primary hover:bg-surface-500">Join</button>
+                    <input class="input" type="text" placeholder="xxxxxx" bind:value={privateCode} />
+                    <button class="btn btn-primary hover:bg-surface-500" on:click={handleJoin}>Join</button>
                 </div>
             </label>
         </div>

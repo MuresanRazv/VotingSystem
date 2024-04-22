@@ -19,6 +19,12 @@ async def get_poll_by_id(poll_id: str) -> Poll:
         return None
     return Poll(**poll_dict)
 
+async def get_poll_by_code(poll_code: str) -> Poll:
+    poll_dict = await application_db.polls.find_one({"is_private": True, "private_code": poll_code})
+    if (poll_dict is None):
+        return None
+    return Poll(**poll_dict)
+
 async def get_polls(options: Dict) -> list[Poll]:
     polls = await application_db.polls.find(options, projection=None).to_list(length=1000)
     return [Poll(**poll) for poll in polls]
