@@ -105,9 +105,9 @@
         <input class="input {!poll.description ? 'input-warning': ''}" type="text" placeholder="Description" bind:value={poll.description} />
     </label>
     
-    <SlideToggle name="slider-medium" bind:checked={poll.multiple_choice} active="bg-primary-500" size="sm">Multiple-Choice</SlideToggle>
+    <SlideToggle name="slider-medium" bind:checked={poll.multiple_choice} active="bg-primary-500" size="sm" disabled={!canEdit}>Multiple-Choice</SlideToggle>
 
-    <SlideToggle name="slider-medium" bind:checked={poll.is_private} active="bg-primary-500" size="sm">Private</SlideToggle>
+    <SlideToggle name="slider-medium" bind:checked={poll.is_private} active="bg-primary-500" size="sm" disabled={!canEdit}>Private</SlideToggle>
 
     
     <span>Candidates</span>

@@ -149,6 +149,7 @@ async function getPrivatePoll(poll_code: string) {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     }
   })
+  .then(response => response.json());
 }
 
 export { getUserPolls, updatePoll, createPoll, removePoll, getPublicPolls, getResults, getGeneralResults, publishPoll, getPrivatePoll };

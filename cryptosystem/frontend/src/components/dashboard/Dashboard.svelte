@@ -10,6 +10,9 @@
 	import Polls from "./Polls.svelte";
 
     onMount(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // check user token
         if (!$userToken) {
             window.location.href = '/login'
         } else {
@@ -30,8 +33,13 @@
             })
             .then(data => {
                 user.set(data)
+
+                 // redirect user to dashboard poll if joined poll by link
+                if (urlParams.has("poll_code")) {
+                    $currentTab = 3;
+                }
             })
-            .catch(error => console.error('Error:', error))
+            .catch(error => console.error('Error:', error));           
         }
     })
 </script>

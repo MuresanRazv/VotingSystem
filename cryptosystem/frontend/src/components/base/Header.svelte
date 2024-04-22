@@ -6,7 +6,7 @@
 </script>
 
 <AppBar>
-	<svelte:fragment slot="lead"><img style="filter: invert(100%); width: 35px; heigth: 35px;" src="./privacy-document-icon.svg" alt="img"/></svelte:fragment>
+	<svelte:fragment slot="lead"><img style="width: 35px; heigth: 35px;" src="./privacy-document-icon.svg" alt="img"/></svelte:fragment>
 	CyberPolls
 	<svelte:fragment slot="trail">
         <button type="button" class="btn bg-initial" on:click={() => goto('/')}>Home</button>

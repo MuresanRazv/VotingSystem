@@ -5,12 +5,18 @@
     import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
     import EditPoll from "./EditPoll.svelte";
 	import { polls } from "../../stores/polls";
+	import Share from "./Share.svelte";
 			
     const modalStore = getModalStore();
-    const modalComponent: ModalComponent = { ref: EditPoll };
-    const modal: ModalSettings = {
+    const modalPollComponent: ModalComponent = { ref: EditPoll };
+    const pollModal: ModalSettings = {
         type: 'component',
-        component: modalComponent,
+        component: modalPollComponent,
+    };
+    const modalShareComponent: ModalComponent = { ref: Share };
+    const shareModal: ModalSettings = {
+        type: 'component',
+        component: modalShareComponent,
     };
 
     $polls = getUserPolls();
@@ -30,17 +36,21 @@
                     </div>
                 {/if}
                 {#each currentPolls as poll}
-                
                     <div class="space-x-4">
-                        <button class='p-2 hover:bg-surface-500 rounded-3xl'>
+                        <button class='p-2 hover:bg-surface-500 rounded-3xl' on:click={() => {
+                            modalShareComponent.props = {
+                                poll_code: poll.private_code
+                            };
+                            modalStore.trigger(shareModal);
+                        }}>
                             <img src="./share-from-square-regular.svg" alt="arrow" class="w-5 h-5"/>
                         </button>
                         <button class='w-[100%] text-left' on:click={() => {
-                            modalComponent.props = {
+                            modalPollComponent.props = {
                                 poll: poll,
                                 canEdit: false
-                                }
-                                modalStore.trigger(modal)
+                                };
+                                modalStore.trigger(pollModal);
                             }
                         }>
                         <div class='hover:bg-surface-500 cursor-pointer'>
@@ -51,14 +61,13 @@
                         </div>
                     </button>
                     </div>
-                
                 {/each}
                 <button class="btn btn-primary variant-soft-surface w-[100%]" on:click={() => {
-                        modalComponent.props = {
+                        modalPollComponent.props = {
                             poll: {},
                             canEdit: true
                         }
-                        modalStore.trigger(modal)
+                        modalStore.trigger(pollModal)
                     }
                 }>
                     <img src="./plus-solid.svg" alt="plus" class="w-5 h-5"/>

@@ -7,11 +7,8 @@ async def create_vote(user_id: str, poll_id: str, newVote: Vote):
     poll = await get_poll_by_id(poll_id)
 
     # check if user already voted
-    votes = await get_votes_by_user_id_crud(str(user_id))
-    if votes is not None:
-        for vote in votes:
-            if str(poll_id) == str(vote.poll_id) and str(vote.user_id) == str(user_id):
-                raise HTTPException(status_code=400, detail="User already voted")
+    if (await user_voted(user_id, poll_id)):
+        raise HTTPException(status_code=400, detail="User already voted")
 
     # encrypt tallies
     for candidate in newVote.candidates:
@@ -31,3 +28,13 @@ async def get_votes_by_user_id(user_id: str):
         responseVotes.append(ResponseVote(poll=poll))
 
     return responseVotes
+
+async def user_voted(user_id: str, poll_id: str):
+    # check if user already voted
+    votes = await get_votes_by_user_id_crud(str(user_id))
+    if votes is not None:
+        for vote in votes:
+            if str(poll_id) == str(vote.poll_id) and str(vote.user_id) == str(user_id):
+                return True
+            
+    return False

@@ -14,7 +14,6 @@
     onMount(() => {
         getResults(poll_id)
         .then((response: any) => {
-            console.log(response)
             if (response.detail) {
                 throw response.detail;
             }
