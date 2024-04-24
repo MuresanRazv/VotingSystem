@@ -116,6 +116,16 @@ async def get_private_poll(poll_code: str):
     
     return poll
 
+async def get_public_poll(poll_id: str):
+    poll = await get_poll_by_id(poll_id)
+    if poll is None:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    if poll.is_private:
+        raise HTTPException(status_code=403, detail="Poll is private")
+
+    return poll
+
 async def get_results(poll_id: str, user: User):
     poll = await get_poll_by_id(poll_id)
     pollResults = PollResults(

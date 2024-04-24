@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Toast, getModalStore, getToastStore } from "@skeletonlabs/skeleton";
     import type { ModalComponent, ModalSettings, ToastSettings } from '@skeletonlabs/skeleton';
-	import { getPublicPolls, getPrivatePoll } from "../../helper/polls";
+	import { getPublicPolls, getPrivatePoll, getPublicPoll } from "../../helper/polls";
     import { polls } from "../../stores/polls";
     import VotePoll from "./VotePoll.svelte";
 	import { getUserVotes } from "../../helper/votes";
@@ -52,7 +52,7 @@
 
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
-
+        
         if (urlParams.has("poll_code")) {
             let poll_code = urlParams.get("poll_code");
             if (poll_code?.length === 6) {
@@ -82,6 +82,34 @@
                 });
             } else {
                 toastStore.trigger(t);
+            }
+        } else if (urlParams.has("poll_id")) {
+            let poll_id = urlParams.get("poll_id");
+            if (poll_id) {
+                getPublicPoll(poll_id)
+                .then((response: any) => {
+                    if (response.created_by === $user._id) {
+                        toastStore.trigger({
+                            message: 'You cannot vote on your own poll',
+                        });
+                    } else if (response.id && response.message) {
+                        // user voted already, let status component handle it
+                        statusModalComponent.props = {
+                            poll_id: response.id
+                        };
+                        modalStore.trigger(pollStatusModal);
+                    } else {
+                        // user can vote
+                        modalComponent.props = {
+                            poll: response
+                        };
+                        modalStore.trigger(pollModal);
+                    }
+                })
+                .finally(() => {
+                    urlParams.delete("poll_code");
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
             }
         }
     })

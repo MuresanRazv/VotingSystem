@@ -2,12 +2,11 @@
 	import '../app.pcss';
 	import Header from '../components/base/Header.svelte';
 	import Footer from '../components/base/Footer.svelte';
-	import { AppShell } from '@skeletonlabs/skeleton';
+	import { AppShell, Drawer } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 </script>
-
 
 <AppShell>
 	<svelte:fragment slot="header"><Header /></svelte:fragment>

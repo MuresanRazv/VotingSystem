@@ -35,7 +35,7 @@
                 user.set(data)
 
                  // redirect user to dashboard poll if joined poll by link
-                if (urlParams.has("poll_code")) {
+                if (urlParams.has("poll_code") || urlParams.has("poll_id")) {
                     $currentTab = 3;
                 }
             })
@@ -59,29 +59,36 @@
 <div class="dashboard">
     <AppRail>
         <svelte:fragment slot="lead">
-            <AppRailAnchor href="/" >(icon)</AppRailAnchor>
+            <AppRailAnchor href="/" >
+                <img class="w-6 h-6 mx-[auto]" src="../house-solid.svg" alt="logo" />
+                <span class="mx-[auto]">Home</span>
+            </AppRailAnchor>
         </svelte:fragment>
         
         <AppRailTile bind:group={$currentTab} name="tile-2" value={1} title="tile-2">
-            <svelte:fragment slot="lead">(icon)</svelte:fragment>
+            <svelte:fragment slot="lead">
+                <img class="w-6 h-6 mx-[auto]" src="../square-poll-vertical-solid.svg" alt="logo" />
+            </svelte:fragment>
             <span>Dashboard</span>
         </AppRailTile>
         <AppRailTile bind:group={$currentTab} name="tile-4" value={3} title="tile-4">
-            <svelte:fragment slot="lead">(icon)</svelte:fragment>
+            <svelte:fragment slot="lead">
+                <img class="w-6 h-6 mx-[auto]" src="../check-to-slot-solid.svg" alt="logo" />
+            </svelte:fragment>
             <span>Polls</span>
         </AppRailTile>
         <AppRailTile bind:group={$currentTab} name="tile-3" value={2} title="tile-3">
-            <svelte:fragment slot="lead">(icon)</svelte:fragment>
+            <svelte:fragment slot="lead">
+                <img class="w-6 h-6 mx-[auto]" src="../table-columns-solid.svg" alt="logo" />
+            </svelte:fragment>
             <span>Manage Polls</span>
         </AppRailTile>
         <AppRailTile bind:group={$currentTab} name="tile-1" value={0} title="tile-1">
-            <svelte:fragment slot="lead">(icon)</svelte:fragment>
+            <svelte:fragment slot="lead">
+                <img class="w-6 h-6 mx-[auto]" src="../user-solid.svg" alt="logo" />
+            </svelte:fragment>
             <span>Personal Information</span>
         </AppRailTile>
-    
-        <svelte:fragment slot="trail">
-            <AppRailAnchor href="/" target="_blank" title="Account">(icon)</AppRailAnchor>
-        </svelte:fragment>
     </AppRail>
     <div class="content">
         {#if $currentTab == 0}

@@ -3,7 +3,8 @@
     import { clipboard } from '@skeletonlabs/skeleton';
     
     export let poll_code: string;
-    const poll_link = `http://localhost:5173/dashboard?poll_code=${poll_code}`;
+    export let poll_id: string;
+    const poll_link = poll_code ? `http://localhost:5173/dashboard?poll_code=${poll_code}`: `http://localhost:5173/dashboard?poll_id=${poll_id}`;
     const poll_logo = '../privacy-document-icon.svg';
     let show_link_copied = false;
 
@@ -17,12 +18,22 @@
 
 <div class="w-[max-content] max-h-[80vh] overflow-scroll bg-surface-800 p-10 rounded-3xl">
     <div class="w-[max-content] flex flex-col justify-center mx-[auto] text-center gap-[20px]">
-        <span>Your private poll code:</span>
-        <button class="variant-soft rounded-3xl p-2" use:clipboard={poll_link} on:click={setFlagTrueForSeconds}>
-            <h2 class="h2">
-                {poll_code}
-            </h2>
-        </button>
+        {#if poll_code}
+            <span>Your private poll code:</span>
+            <button class="variant-soft rounded-3xl p-2" use:clipboard={poll_link} on:click={setFlagTrueForSeconds}>
+                <h2 class="h2">
+                    {poll_code}
+                </h2>
+            </button>
+        {:else}
+            <span>Your public poll link:</span>
+            <button class="variant-soft rounded-3xl p-2" use:clipboard={poll_link} on:click={setFlagTrueForSeconds}>
+                <h2 class="h2 max-w-[400px] truncate">
+                    {poll_link}
+                </h2>
+            </button>
+        {/if}
+        
         {#if show_link_copied}
             <small>Link copied!</small>
         {/if}

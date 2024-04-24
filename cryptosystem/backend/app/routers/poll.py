@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models import Poll, User, Candidate, PollResults
-from services import create_poll, update_poll, delete_poll, get_polls, get_results, get_general_results, update_status, publish_poll, get_private_poll, user_voted
-from crud import get_current_active_user, get_polls_by_user_id, get_poll_by_id
+from services import create_poll, update_poll, delete_poll, get_polls, get_results, get_general_results, update_status, publish_poll, get_private_poll, user_voted, get_public_poll
+from crud import get_current_active_user, get_polls_by_user_id
 from fastapi_utilities import repeat_at
 import logging
 
@@ -43,7 +43,7 @@ async def read_all_poll_results(user: User = Depends(get_current_active_user)):
 
 @router.get("/{poll_id}", response_model=Poll)
 async def read_poll(poll_id: str, user: User = Depends(get_current_active_user)):
-    poll = await get_poll_by_id(poll_id)
+    poll = await get_public_poll(poll_id)
     if poll is None:
         raise HTTPException(status_code=404, detail="Poll not found")
     return poll

@@ -39,7 +39,8 @@
                     <div class="space-x-4">
                         <button class='p-2 hover:bg-surface-500 rounded-3xl' on:click={() => {
                             modalShareComponent.props = {
-                                poll_code: poll.private_code
+                                poll_code: poll.private_code,
+                                poll_id: poll._id
                             };
                             modalStore.trigger(shareModal);
                         }}>

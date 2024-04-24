@@ -152,5 +152,16 @@ async function getPrivatePoll(poll_code: string) {
   .then(response => response.json());
 }
 
-export { getUserPolls, updatePoll, createPoll, removePoll, getPublicPolls, getResults, getGeneralResults, publishPoll, getPrivatePoll };
+async function getPublicPoll(poll_id: string) {
+  return await fetch(`http://127.0.0.1:8000/api/polls/${poll_id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    }
+  })
+  .then(response => response.json());
+}
+
+export { getUserPolls, updatePoll, createPoll, removePoll, getPublicPolls, getResults, getGeneralResults, publishPoll, getPrivatePoll, getPublicPoll };
 
