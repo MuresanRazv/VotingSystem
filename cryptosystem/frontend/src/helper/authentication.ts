@@ -1,7 +1,7 @@
-import type User from "../components/authentication/User.svelte";
+import { PUBLIC_BASE_API_URL } from "$env/static/public";
 
 async function register(user: any, password: string) {
-    return fetch(`http://127.0.0.1:8000/api/users`, {
+    return fetch(PUBLIC_BASE_API_URL + `/users`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ async function register(user: any, password: string) {
 }
 
 async function updateInformation(user: any) {
-    return fetch(`http://127.0.0.1:8000/api/users/${user._id}`, {
+    return fetch(PUBLIC_BASE_API_URL + `/users/${user._id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ async function updateInformation(user: any) {
 }
 
 async function login(email: string, password: string) {
-    return fetch('http://127.0.0.1:8000/api/login/', {
+    return fetch(PUBLIC_BASE_API_URL + '/login/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

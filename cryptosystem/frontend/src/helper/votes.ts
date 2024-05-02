@@ -1,4 +1,5 @@
 import type { Vote } from "../stores/votes";
+import { PUBLIC_BASE_API_URL } from "$env/static/public";
 
 async function addVote(poll_id: string, vote: Vote) {
     // Clear candidates id's
@@ -10,7 +11,7 @@ async function addVote(poll_id: string, vote: Vote) {
         }
     });
 
-    return await fetch(`http://localhost:8000/api/votes/${poll_id}/vote`, {
+    return await fetch(PUBLIC_BASE_API_URL + `/votes/${poll_id}/vote`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -26,7 +27,7 @@ async function addVote(poll_id: string, vote: Vote) {
 }
 
 async function getUserVotes(user_id: string) {
-    return await fetch(`http://localhost:8000/api/votes/${user_id}`, {
+    return await fetch(PUBLIC_BASE_API_URL + `/votes/${user_id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

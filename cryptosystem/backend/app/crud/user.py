@@ -6,12 +6,15 @@ from jose import JWTError, jwt
 from typing import Annotated
 from models import User, UpdatedUser
 from bson import ObjectId
+import os
+from dotenv import load_dotenv
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "d46d1f1fcc364a513277fda8e503ae4de3c81c30474b59165cd46dc717e04ef2"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 async def create_user(user: User) -> User:
     user_dict = user.model_dump()

@@ -1,8 +1,8 @@
-import type { Poll, Candidate } from "../stores/polls"
-
+import type { Poll } from "../stores/polls"
+import { PUBLIC_BASE_API_URL } from "$env/static/public";
 
 async function getUserPolls() {
-  return await fetch(`http://127.0.0.1:8000/api/polls/me`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls/me`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ async function getUserPolls() {
 }
 
 async function getPublicPolls() {
-  return await fetch(`http://127.0.0.1:8000/api/polls`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ async function updatePoll(poll: Poll) {
     }
   })
   
-  return await fetch(`http://127.0.0.1:8000/api/polls/${poll._id}`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls/${poll._id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ async function createPoll(poll: Poll) {
     })
   }
   
-  return await fetch(`http://127.0.0.1:8000/api/polls`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ async function createPoll(poll: Poll) {
 }
 
 async function removePoll(poll_id: string) {
-  return await fetch(`http://127.0.0.1:8000/api/polls/${poll_id}`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls/${poll_id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ async function removePoll(poll_id: string) {
 }
 
 async function getResults(poll_id: string) {
-  return await fetch(`http://127.0.0.1:8000/api/polls/${poll_id}/results`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls/${poll_id}/results`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ async function getResults(poll_id: string) {
 }
 
 async function getGeneralResults() {
-  return await fetch(`http://127.0.0.1:8000/api/polls/results`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls/results`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ async function getGeneralResults() {
 }
 
 async function publishPoll(poll_id: string) {
-  return await fetch(`http://127.0.0.1:8000/api/polls/${poll_id}/publish`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls/${poll_id}/publish`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ async function publishPoll(poll_id: string) {
 }
 
 async function getPrivatePoll(poll_code: string) {
-  return await fetch(`http://127.0.0.1:8000/api/polls/private/${poll_code}`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls/private/${poll_code}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ async function getPrivatePoll(poll_code: string) {
 }
 
 async function getPublicPoll(poll_id: string) {
-  return await fetch(`http://127.0.0.1:8000/api/polls/${poll_id}`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls/${poll_id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
