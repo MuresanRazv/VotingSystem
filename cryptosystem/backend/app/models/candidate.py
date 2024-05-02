@@ -13,5 +13,4 @@ class Candidate(BaseModel):
         arbitrary_types_allowed = True
 
     name: str
-    description: Optional[str] = None
     tally: Optional[str] = None

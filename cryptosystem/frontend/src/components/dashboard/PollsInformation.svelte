@@ -8,6 +8,13 @@
     import type { AutocompleteOption, PopupSettings } from '@skeletonlabs/skeleton';
     import { popup } from "@skeletonlabs/skeleton";
 	import { polls, type Poll } from "../../stores/polls";
+    import isMobileStore from "../../stores/generalStore";
+
+    let isMobile = false;
+
+    isMobileStore.subscribe(value => {
+        isMobile = value;
+    });
 
     let searchInput = '';
     let searchOptions: AutocompleteOption<string>[] = [];
@@ -36,7 +43,7 @@
 </script>
 
 <div class="flex flex-col m-10 gap-10">
-    <div class="flex w-[30%]">
+    <div class="flex {!isMobile ? 'w-[30%]': ''}">
         <div class="w-[90%]">
             <input
             class="input autocomplete"
@@ -66,10 +73,8 @@
         </div>
     </div>
 
-    <div class="flex w-[100%] h-[100%] gap-10">                                
-        <ResultsCharts {results} showBarChart={true} />
+    <div class="flex {isMobile ? 'flex-col': ''} w-[100%] h-[100%] gap-10">                                
+        <ResultsCharts {isMobile} {results} showBarChart={true} />
     </div>
-    <ResultsCandidates {results} />
-
-
+    <ResultsCandidates {isMobile} {results} />
 </div>

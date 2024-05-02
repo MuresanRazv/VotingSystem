@@ -5,6 +5,13 @@
     import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
     import { initializeStores } from '@skeletonlabs/skeleton';
 	import { updateInformation } from "../../helper/authentication";
+    import isMobileStore from "../../stores/generalStore";
+
+    let isMobile = false;
+
+    isMobileStore.subscribe(value => {
+        isMobile = value;
+    });
 
     initializeStores();
     const toastStore = getToastStore();
@@ -36,64 +43,33 @@
     }
 </script>
 
-<style>
-    .user-information {
-        display: flex;
-        flex-direction: column;
-        margin: auto;
-        width: 35%;
-        gap: 20px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: row;
-    }
-
-    .label {
-        width: 100%;
-        padding: 0 10px;
-    }
-
-    .user-information-container {
-        display: flex;
-        justify-content: center;
-        height: 100%;
-    }
-
-    .btn {
-        width: max-content;
-        margin: 0 auto;
-    }
-</style>
-
 <Toast />
 
-<div class="user-information-container">
-    <div class="user-information">
-        <label class="label">
+<div class="flex justify-center h-[100%]">
+    <div class="flex flex-col m-[auto] {!isMobile ? 'w-[35%]': 'w-[80%]'} gap-[20px]">
+        <label class="w-[100%] px-[10px]">
             <span>Username</span>
             <input class="input" type="text" placeholder="Username" bind:value={$user.username} readonly />
         </label>
                         
-        <label class="label">
+        <label class="w-[100%] px-[10px]">
             <span>Email</span>
             <input class="input" type="text" placeholder="Email" bind:value={$user.email} readonly />
         </label>
                 
-        <div class="form-group">
-            <label class="label">
+        <div class="flex">
+            <label class="w-[100%] px-[10px]">
                 <span>Name</span>
                 <input class="input" type="text" placeholder="Name" bind:value={$user.firstname} required />
             </label>
                             
-            <label class="label">
+            <label class="w-[100%] px-[10px]">
                 <span>Surname</span>
                 <input class="input" type="text" placeholder="Surname" bind:value={$user.lastname} required />
             </label>
         </div>
     
-        <label class="label">
+        <label class="w-[100%] px-[10px]">
             <span>County</span>
             <select class="select" bind:value={$user.county} required >
                 {#each Object.keys($romaniaCities) as county}
@@ -102,7 +78,7 @@
             </select>
         </label>
     
-        <label class="label">
+        <label class="w-[100%] px-[10px]">
             <span>City</span>
             <select class="select" bind:value={$user.city} required >
                 {#if $user?.county == ''}
@@ -115,6 +91,6 @@
             </select>
         </label>
 
-        <button type="button" class="btn variant-filled" on:click={handleUpdateInformation}>Update Information</button>
+        <button type="button" class="btn w-[100%] mx-[auto] variant-filled" on:click={handleUpdateInformation}>Update Information</button>
     </div>	
 </div>

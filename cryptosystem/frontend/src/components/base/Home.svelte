@@ -2,18 +2,17 @@
 	import { RadioGroup, RadioItem } from "@skeletonlabs/skeleton";
     import { browser } from "$app/environment";
 	import { onMount } from "svelte";
+    import isMobileStore from "../../stores/generalStore";
 
     let value: number = 0;
     let isMobile = false;
     let rounded = isMobile ? 'rounded-lg': 'rounded-3xl';
     let padding = isMobile ? 'p-5': 'p-2';
 
-    onMount(() => {
-        window.addEventListener('resize', () => {
-            isMobile = window.innerWidth < 768;
-            rounded = isMobile ? 'rounded-lg': 'rounded-3xl';
-            padding = isMobile ? 'p-5': 'p-2';
-        });
+    isMobileStore.subscribe(value => {
+        isMobile = value;
+        rounded = isMobile ? 'rounded-lg': 'rounded-3xl';
+        padding = isMobile ? 'p-5': 'p-2';
     });
 </script>
 

@@ -8,6 +8,13 @@
 	import ManagePolls from "./ManagePolls.svelte";
     import { currentTab } from "../../stores/dashboard";
 	import Polls from "./Polls.svelte";
+    import isMobileStore from "../../stores/generalStore";
+
+    let isMobile = false;
+
+    isMobileStore.subscribe(value => {
+        isMobile = value;
+    });
 
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -44,53 +51,43 @@
     })
 </script>
 
-<style>
-    .dashboard {
-        display: flex;
-        flex-direction: row;
-        height: 100%;
-    }
-
-    .content {
-        width: 100%;
-    }
-</style>
-
-<div class="dashboard">
-    <AppRail>
-        <svelte:fragment slot="lead">
-            <AppRailAnchor href="/" >
-                <img class="w-6 h-6 mx-[auto]" src="../house-solid.svg" alt="logo" />
-                <span class="mx-[auto]">Home</span>
-            </AppRailAnchor>
-        </svelte:fragment>
-        
-        <AppRailTile bind:group={$currentTab} name="tile-2" value={1} title="tile-2">
+<div class="flex h-[100%]">
+    {#if !isMobile}
+        <AppRail>
             <svelte:fragment slot="lead">
-                <img class="w-6 h-6 mx-[auto]" src="../square-poll-vertical-solid.svg" alt="logo" />
+                <AppRailAnchor href="/" >
+                    <img class="w-6 h-6 mx-[auto]" src="../house-solid.svg" alt="logo" />
+                    <span class="mx-[auto]">Home</span>
+                </AppRailAnchor>
             </svelte:fragment>
-            <span>Dashboard</span>
-        </AppRailTile>
-        <AppRailTile bind:group={$currentTab} name="tile-4" value={3} title="tile-4">
-            <svelte:fragment slot="lead">
-                <img class="w-6 h-6 mx-[auto]" src="../check-to-slot-solid.svg" alt="logo" />
-            </svelte:fragment>
-            <span>Polls</span>
-        </AppRailTile>
-        <AppRailTile bind:group={$currentTab} name="tile-3" value={2} title="tile-3">
-            <svelte:fragment slot="lead">
-                <img class="w-6 h-6 mx-[auto]" src="../table-columns-solid.svg" alt="logo" />
-            </svelte:fragment>
-            <span>Manage Polls</span>
-        </AppRailTile>
-        <AppRailTile bind:group={$currentTab} name="tile-1" value={0} title="tile-1">
-            <svelte:fragment slot="lead">
-                <img class="w-6 h-6 mx-[auto]" src="../user-solid.svg" alt="logo" />
-            </svelte:fragment>
-            <span>Personal Information</span>
-        </AppRailTile>
-    </AppRail>
-    <div class="content">
+            
+            <AppRailTile bind:group={$currentTab} name="tile-2" value={1} title="tile-2">
+                <svelte:fragment slot="lead">
+                    <img class="w-6 h-6 mx-[auto]" src="../square-poll-vertical-solid.svg" alt="logo" />
+                </svelte:fragment>
+                <span>Dashboard</span>
+            </AppRailTile>
+            <AppRailTile bind:group={$currentTab} name="tile-4" value={3} title="tile-4">
+                <svelte:fragment slot="lead">
+                    <img class="w-6 h-6 mx-[auto]" src="../check-to-slot-solid.svg" alt="logo" />
+                </svelte:fragment>
+                <span>Polls</span>
+            </AppRailTile>
+            <AppRailTile bind:group={$currentTab} name="tile-3" value={2} title="tile-3">
+                <svelte:fragment slot="lead">
+                    <img class="w-6 h-6 mx-[auto]" src="../table-columns-solid.svg" alt="logo" />
+                </svelte:fragment>
+                <span>Manage Polls</span>
+            </AppRailTile>
+            <AppRailTile bind:group={$currentTab} name="tile-1" value={0} title="tile-1">
+                <svelte:fragment slot="lead">
+                    <img class="w-6 h-6 mx-[auto]" src="../user-solid.svg" alt="logo" />
+                </svelte:fragment>
+                <span>Personal Information</span>
+            </AppRailTile>
+        </AppRail>
+    {/if}
+    <div class="w-[100%]">
         {#if $currentTab == 0}
             <User />
         {:else if $currentTab == 1}

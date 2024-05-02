@@ -6,6 +6,7 @@
     import { getToastStore } from "@skeletonlabs/skeleton";
 
     export let results: PollResults | Promise<PollResults>;
+    export let isMobile: Boolean;
 
     const toastStore = getToastStore();
     const published: ToastSettings = {
@@ -34,8 +35,8 @@
     <div class="placeholder animate-pulse" />
 {:then results}
     {#if results.candidates.length > 0}
-        <div class="flex w-[100%] gap-10">
-            <div class="bg-surface-800 p-10 rounded-3xl w-[50%]">
+        <div class="flex {isMobile ? 'flex-col': '' } w-[100%] gap-5">
+            <div class="bg-surface-800 p-10 rounded-3xl {!isMobile ? 'w-[50%]': '' }">
                 <h2>
                     Candidates Statistics
                 </h2>
@@ -59,7 +60,7 @@
                     {/each}
                 </div>
             </div>
-            <div class="flex flex-col gap-5 bg-surface-800 p-10 rounded-3xl w-[50%]">
+            <div class="flex flex-col gap-5 bg-surface-800 p-10 rounded-3xl {!isMobile ? 'w-[50%]': '' }">
                 <h2>
                     {#if results.status}
                         {#if results.status == 'in_progress'}

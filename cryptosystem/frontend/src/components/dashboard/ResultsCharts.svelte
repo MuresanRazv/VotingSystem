@@ -4,6 +4,7 @@
 
     export let showBarChart: boolean;
     export let results: PollResults | Promise<PollResults>;
+    export let isMobile: boolean;
 </script>
 
 {#await results}
@@ -42,7 +43,7 @@
     </div>
 {:then results}
     {#if showBarChart}
-        <div class="bg-surface-800 h-[max-content] w-[60%] rounded-3xl p-5">
+        <div class="bg-surface-800 h-[max-content] {!isMobile ? 'w-[60%]': '' } rounded-3xl p-5">
             <BarChartSimple data={Object.entries(results.votes_this_week).map(([key, value]) => {
                 return {
                     group: key,
@@ -67,7 +68,7 @@
             }} />
         </div>
     {/if}
-    <div class="bg-surface-800 h-[max-content] {!showBarChart ? 'w-[100%]': 'w-[40%]'} rounded-3xl p-5">
+    <div class="bg-surface-800 h-[max-content] {!showBarChart || isMobile ? 'w-[100%]': 'w-[40%]'} rounded-3xl p-5">
         <PieChart data={Object.entries(results.county_statistics).map(([key, value]) => {
             return {
                 group: key,

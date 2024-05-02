@@ -7,6 +7,7 @@
     import { goto } from "$app/navigation";
     import { register, login } from "../../helper/authentication";
     import { userToken } from "../../stores/user";
+    import isMobileStore from "../../stores/generalStore";
 
     initializeStores();
     const toastStore = getToastStore();
@@ -19,6 +20,11 @@
 
     let password = '';
     let confirmPassword = '';
+    let isMobile = false;
+
+    isMobileStore.subscribe(value => {
+        isMobile = value;
+    });
 
     function handleRegister() {
         if ($user.firstname == '' || $user.lastname == '' || $user.county == '' || $user.county == '' || $user.email == '' || $user.username == '' || password == '') {
@@ -52,76 +58,51 @@
     }
 </script>
 
-<style>
-    .user-information {
-        display: flex;
-        flex-direction: column;
-        margin: auto;
-        width: 35%;
-        gap: 20px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: row;
-    }
-
-    .label {
-        width: 100%;
-        padding: 0 10px;
-    }
-
-    .user-information-container {
-        display: flex;
-        justify-content: center;
-        height: 100%;
-    }
-
-    .btn {
-        width: max-content;
-        margin: 0 auto;
-    }
-</style>
-
 <Toast />
 
-<div class="user-information-container">
-    <div class="user-information">
-        <label class="label">
+<div class="flex flex-col justify-center h-[100%] py-5">
+    <header class="text-center pt-5 py-10">
+        <h2 class="h2">
+            Register
+        </h2>
+    </header>
+
+    <div class="flex flex-col m-[auto] {!isMobile ? 'w-[35%]': 'w-[70%]'} gap-[20px]">
+        <label class="w-[100%] p-[0 10px]">
             <span>Username</span>
             <input class="input" type="text" placeholder="Username" bind:value={$user.username} required />
         </label>
                         
-        <label class="label">
+        <label class="w-[100%] p-[0 10px]">
             <span>Email</span>
             <input class="input" type="text" placeholder="Email" bind:value={$user.email} required />
         </label>
                 
-        <label class="label">
+        <label class="w-[100%] p-[0 10px]">
             <span>Password</span>
             <input class='input {password !== confirmPassword ? "input-warning" : ""}' 
             type="password" placeholder="Password" bind:value={password} required />
         </label>
 
-        <label class="label">
+        <label class="w-[100%] p-[0 10px]">
             <span>Confirm Password</span>
             <input class='input {password !== confirmPassword ? "input-warning" : ""}'
              type="password" placeholder="Confirm Password" bind:value={confirmPassword} required />
         </label>
 
-        <div class="form-group">
-            <label class="label">
+        <div class="flex gap-[5px]">
+            <label class="w-[100%] p-[0 10px]">
                 <span>Name</span>
                 <input class="input" type="text" placeholder="Name" bind:value={$user.firstname} required />
             </label>
                             
-            <label class="label">
+            <label class="w-[100%] p-[0 10px]">
                 <span>Surname</span>
                 <input class="input" type="text" placeholder="Surname" bind:value={$user.lastname} required />
             </label>
         </div>
     
-        <label class="label">
+        <label class="w-[100%] p-[0 10px]">
             <span>County</span>
             <select class="select" bind:value={$user.county} required >
                 {#each Object.keys($romaniaCities) as county}
@@ -130,7 +111,7 @@
             </select>
         </label>
     
-        <label class="label">
+        <label class="w-[100%] p-[0 10px]">
             <span>City</span>
             <select class="select" bind:value={$user.city} required >
                 {#if $user?.county == ''}
@@ -143,6 +124,6 @@
             </select>
         </label>
 
-        <button type="button" class="btn variant-filled" on:click={handleRegister}>Register</button>
+        <button type="button" class="btn variant-filled-secondary" on:click={handleRegister}>Register</button>
     </div>	
 </div>

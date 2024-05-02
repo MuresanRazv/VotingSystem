@@ -4,6 +4,13 @@
     import ResultsCharts from "./ResultsCharts.svelte";
     import ResultsCandidates from "./ResultsCandidates.svelte";
 	import type { PollResults } from "../../stores/polls";
+    import isMobileStore from "../../stores/generalStore";
+
+    let isMobile = false;
+
+    isMobileStore.subscribe(value => {
+        isMobile = value;
+    });
 
     export let poll_id: string;
     let results: PollResults;
@@ -38,8 +45,8 @@
 <div class="flex flex-col bg-surface-900 rounded-3xl p-10 gap-5 max-h-[80vh] overflow-scroll">
     {#if published && results}
         <h3>🏆 Winner: {winner}</h3>
-        <ResultsCharts {results} showBarChart={false} />
-        <ResultsCandidates {results} />
+        <ResultsCharts {isMobile} {results} showBarChart={false} />
+        <ResultsCandidates {isMobile} {results} />
     {:else}
         <p>Sorry, but the results have not been published by the creator of the poll.</p>
         <p>Status: <strong class="{status != 'Completed' ? 'text-yellow-500': 'text-green-500'}">{status}</strong></p>

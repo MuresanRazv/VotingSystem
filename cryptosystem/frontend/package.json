@@ -44,7 +44,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@floating-ui/dom": "^1.6.3",
+    "@floating-ui/dom": "^1.6.4",
     "@svelte-put/qr": "^1.2.0"
   }
 }

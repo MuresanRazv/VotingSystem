@@ -2,6 +2,13 @@
 	import { SlideToggle, getModalStore, getToastStore, type ToastSettings, Toast } from "@skeletonlabs/skeleton";
     import { polls, type Poll } from "../../stores/polls";
     import { createPoll, getUserPolls, removePoll, updatePoll } from "../../helper/polls";
+    import isMobileStore from "../../stores/generalStore";
+
+    let isMobile = false;
+
+    isMobileStore.subscribe(value => {
+        isMobile = value;
+    });
 
     const toastStore = getToastStore();
     const updated: ToastSettings = {
@@ -44,7 +51,7 @@
         if (!poll.candidates) {
             return false;
         }
-        return poll.candidates.every((candidate) => candidate.name && candidate.description);
+        return poll.candidates.every((candidate) => candidate.name);
     }
 
     function handleSave() {
@@ -94,7 +101,7 @@
     }
 </script>
 
-<div class="card max-h-[80vh] w-[80%] p-10 flex flex-col gap-5 overflow-auto">
+<div class="card max-h-[80vh] {!isMobile ? 'p-10 w-[80%]': 'p-5 w-[95%]'} flex flex-col gap-5 overflow-auto">
     <label class="label">
         <span>Title</span>
         <input class="input {!poll.title ? 'input-warning': ''}" type="text" placeholder="Name" bind:value={poll.title} />
@@ -114,11 +121,16 @@
 
     {#if poll.candidates && poll.candidates.length > 0}
         {#each poll.candidates as candidate, i}
-            <div class="flex gap-5">
+            <div class="flex {!isMobile ? 'gap-5': 'gap-1'}">
                 <input class="input {!candidate.name ? 'input-warning': ''}" type="text" placeholder="Name" bind:value={candidate.name} readonly={!canEdit} required />
-                <input class="input {!candidate.description ? 'input-warning': ''}" type="text" placeholder="Description" bind:value={candidate.description} readonly={!canEdit} required />
                 {#if canEdit}
-                    <button class="btn variant-filled-warning" on:click={() => removeCandidate(i)}>Remove</button>
+                    {#if !isMobile}
+                        <button class="btn variant-filled-warning" on:click={() => removeCandidate(i)}>Remove</button>
+                    {:else}
+                        <button class="btn variant-filled-warning" on:click={() => removeCandidate(i)}>
+                            <img src="./trash-can-solid.svg" alt="trash" class="w-5 h-5"/>
+                        </button>
+                    {/if}
                 {/if}                
             </div>
         {/each}

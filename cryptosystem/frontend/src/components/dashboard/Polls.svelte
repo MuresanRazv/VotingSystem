@@ -9,7 +9,14 @@
     import user from "../../stores/user";
     import PollStatus from "./PollStatus.svelte";
 	import { onMount } from "svelte";
+    import isMobileStore from "../../stores/generalStore";
     
+    let isMobile = false;
+
+    isMobileStore.subscribe(value => {
+        isMobile = value;
+    });
+
     const modalStore = getModalStore();
     const modalComponent: ModalComponent = { ref: VotePoll };
     const statusModalComponent: ModalComponent = { ref: PollStatus };
@@ -117,9 +124,9 @@
 
 <Toast />
 
-<div class="flex flex-col overflow-auto max-h-[65vh] m-10 gap-2">
-    <div class="flex flex-row w-[100%] gap-5">
-        <div class="flex flex-col w-4/6 p-10 gap-5 bg-surface-900 rounded-3xl">
+<div class="flex flex-col overflow-auto {!isMobile ? 'max-h-[65vh]': ''} m-10 gap-2">
+    <div class="flex {!isMobile ? 'flex-row gap-5': 'flex-col gap-2'} w-[100%]">
+        <div class="flex flex-col {!isMobile ? 'w-4/6': ''} p-10 gap-5 bg-surface-900 rounded-3xl">
             <h3>Public polls</h3>
             {#await $polls}
                 <div class="placeholder animate-pulse" />
@@ -148,7 +155,7 @@
                 </dl>
             {/await}
         </div>
-        <div class="flex flex-col w-2/6 p-10 gap-2 bg-surface-900 rounded-3xl">
+        <div class="flex flex-col {!isMobile ? 'w-2/6': ''} p-10 gap-2 bg-surface-900 rounded-3xl">
             <h3>Private polls</h3>
             
             <label class="label">
