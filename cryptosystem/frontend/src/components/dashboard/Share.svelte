@@ -4,6 +4,8 @@
     
     export let poll_code: string;
     export let poll_id: string;
+    export let isMobile: boolean;
+
     const poll_link = poll_code ? `http://localhost:5173/dashboard?poll_code=${poll_code}`: `http://localhost:5173/dashboard?poll_id=${poll_id}`;
     const poll_logo = '../privacy-document-icon.svg';
     let show_link_copied = false;
@@ -16,7 +18,7 @@
     }
 </script>
 
-<div class="w-[80%] max-h-[80vh] overflow-scroll bg-surface-800 p-10 rounded-3xl">
+<div class="{isMobile ? 'w-[80%]': 'w-[30%]'} max-h-[80vh] overflow-scroll bg-surface-800 p-10 rounded-3xl">
     <div class="flex flex-col justify-center mx-[auto] text-center gap-[20px]">
         {#if poll_code}
             <span>Your private poll code:</span>
