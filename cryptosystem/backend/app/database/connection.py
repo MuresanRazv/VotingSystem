@@ -1,18 +1,19 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 import urllib.parse
-import os
 from dotenv import load_dotenv
+from pymongo.server_api import ServerApi
+import os
 
 load_dotenv()
-certificate_path = os.getenv("CERTIFICATE_PATH", "../app/certificate.pem")
+username = urllib.parse.quote_plus(os.getenv("MONGO_USERNAME"))
+password = urllib.parse.quote_plus(os.getenv("MONGO_PASSWORD"))
 
-MONGO_URI = "mongodb+srv://cryptosystem.q66ty3n.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority&appName=Cryptosystem"
+MONGO_URI = f"mongodb+srv://{username}:{password}@cryptosystem.q66ty3n.mongodb.net/?retryWrites=true&w=majority&appName=Cryptosystem"
 CLIENT_DATABASE = "client"
 APPLICATION_DATABASE = "application"
 client = AsyncIOMotorClient(
     MONGO_URI,
-    tls=True,
-    tlsCertificateKeyFile=certificate_path  
+    server_api=ServerApi('1'),
 )
 
 client_db = client[CLIENT_DATABASE]
