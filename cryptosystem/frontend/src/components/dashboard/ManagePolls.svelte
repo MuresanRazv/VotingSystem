@@ -53,7 +53,7 @@
                         }}>
                             <img src="./share-from-square-regular.svg" alt="arrow" class="w-5 h-5"/>
                         </button>
-                        <button class='variant-ghost-surface overflow-hidden max-h-20 btn whitespace-normal w-[100%] text-left' on:click={() => {
+                        <button class='variant-ghost-surface overflow-hidden inline max-h-20 btn whitespace-normal w-[100%] text-left' on:click={() => {
                                 modalPollComponent.props = {
                                     poll: poll,
                                     canEdit: false
