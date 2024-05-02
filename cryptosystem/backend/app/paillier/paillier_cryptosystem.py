@@ -1,4 +1,4 @@
-from paillier.number_generation_helper import generate_prime_candidate, binary_gcd, lcm, modinv
+from app.paillier.number_generation_helper import generate_prime_candidate, binary_gcd, lcm, modinv
 import random
 
 ALPHABET = (

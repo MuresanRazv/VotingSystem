@@ -1,5 +1,5 @@
-from database.connection import client_db
-from models import Vote
+from app.database.connection import client_db
+from app.models import Vote
 from bson import ObjectId
 from fastapi import HTTPException
 from datetime import datetime, timedelta

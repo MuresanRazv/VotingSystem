@@ -9,6 +9,7 @@
     import { currentTab } from "../../stores/dashboard";
 	import Polls from "./Polls.svelte";
     import isMobileStore from "../../stores/generalStore";
+    import { PUBLIC_BASE_API_URL } from "$env/static/public";
 
     let isMobile = false;
 
@@ -23,7 +24,7 @@
         if (!$userToken) {
             window.location.href = '/login'
         } else {
-            fetch('http://127.0.0.1:8000/api/users/me', {
+            fetch(PUBLIC_BASE_API_URL + '/users/me', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

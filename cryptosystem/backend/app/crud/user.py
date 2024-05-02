@@ -1,10 +1,10 @@
-from database.connection import client_db
+from app.database.connection import client_db
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
-from models import TokenData
+from app.models import TokenData
 from jose import JWTError, jwt
 from typing import Annotated
-from models import User, UpdatedUser
+from app.models import User, UpdatedUser
 from bson import ObjectId
 import os
 from dotenv import load_dotenv

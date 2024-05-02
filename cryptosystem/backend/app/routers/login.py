@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from models import User, Login, Token
-from crud import get_user_by_email
+from app.models import User, Login, Token
+from app.crud import get_user_by_email
 from jose import JWTError, jwt
 from fastapi import Depends
 from fastapi import status

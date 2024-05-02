@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from bson import ObjectId
 from typing import List, Optional
-from models import Candidate, Poll
+from app.models import Candidate, Poll
 from datetime import datetime
 
 class Vote(BaseModel):

@@ -1,5 +1,5 @@
-from database.connection import application_db
-from models import Poll
+from app.database.connection import application_db
+from app.models import Poll
 from bson import ObjectId
 from fastapi import HTTPException
 from typing import Dict

@@ -3,7 +3,7 @@ from typing import Optional
 from typing import List
 from bson import ObjectId
 from datetime import datetime
-from models import Candidate
+from app.models import Candidate
 
 class Poll(BaseModel):
     id: ObjectId = Field(default_factory=ObjectId, alias='_id')

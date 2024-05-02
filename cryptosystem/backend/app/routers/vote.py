@@ -1,6 +1,6 @@
-from models import User, Vote, ResponseVote
-from crud import get_current_active_user, get_poll_by_id, get_votes_by_poll_id
-from services import add_vote, create_vote, get_votes_by_user_id
+from app.models import User, Vote, ResponseVote
+from app.crud import get_current_active_user, get_poll_by_id, get_votes_by_poll_id
+from app.services import add_vote, create_vote, get_votes_by_user_id
 from fastapi import APIRouter, HTTPException, Depends
 
 router = APIRouter()

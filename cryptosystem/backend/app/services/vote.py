@@ -1,6 +1,6 @@
-from models.vote import Vote, Poll, ResponseVote
-from paillier import encrypt
-from crud import create_vote as create_vote_crud, get_poll_by_id, get_votes_by_user_id as get_votes_by_user_id_crud
+from app.models.vote import Vote, Poll, ResponseVote
+from app.paillier import encrypt
+from app.crud import create_vote as create_vote_crud, get_poll_by_id, get_votes_by_user_id as get_votes_by_user_id_crud
 from fastapi import HTTPException
 
 async def create_vote(user_id: str, poll_id: str, newVote: Vote):
