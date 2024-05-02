@@ -16,8 +16,8 @@
     }
 </script>
 
-<div class="w-[max-content] max-h-[80vh] overflow-scroll bg-surface-800 p-10 rounded-3xl">
-    <div class="w-[max-content] flex flex-col justify-center mx-[auto] text-center gap-[20px]">
+<div class="w-[80%] max-h-[80vh] overflow-scroll bg-surface-800 p-10 rounded-3xl">
+    <div class="flex flex-col justify-center mx-[auto] text-center gap-[20px]">
         {#if poll_code}
             <span>Your private poll code:</span>
             <button class="variant-soft rounded-3xl p-2" use:clipboard={poll_link} on:click={setFlagTrueForSeconds}>
@@ -27,10 +27,8 @@
             </button>
         {:else}
             <span>Your public poll link:</span>
-            <button class="variant-soft rounded-3xl p-2" use:clipboard={poll_link} on:click={setFlagTrueForSeconds}>
-                <h2 class="h2 max-w-[400px] truncate">
-                    {poll_link}
-                </h2>
+            <button class="truncate variant-soft max-w-[95%] rounded-3xl p-2" use:clipboard={poll_link} on:click={setFlagTrueForSeconds}>
+                {poll_link}
             </button>
         {/if}
         
