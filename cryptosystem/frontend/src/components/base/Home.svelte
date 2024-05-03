@@ -21,22 +21,44 @@
 
     <RadioGroup background="bg-secondary-800" border="border-0" flexDirection="{isMobile ? 'flex-col': 'flex-row'}" rounded={rounded}>
         <RadioItem rounded={rounded} padding={padding} bind:group={value} name="justify" value={0}>What is CyperPolls?</RadioItem>
-        <RadioItem rounded={rounded} padding={padding} bind:group={value} name="justify" value={1}>How do I create polls?</RadioItem>
-        <RadioItem rounded={rounded} padding={padding} bind:group={value} name="justify" value={2}>How do I share/join polls?</RadioItem>
+        <RadioItem rounded={rounded} padding={padding} bind:group={value} name="justify" value={1}>What is the Paillier Cryptosystem?</RadioItem>
+        <RadioItem rounded={rounded} padding={padding} bind:group={value} name="justify" value={2}>What can I do on this platform?</RadioItem>
     </RadioGroup>
 
-    <div id="displayHelp" class="flex flex-col gap-5 rounded-3xl bg-secondary-800 p-10">
+    <div id="displayHelp" class="flex flex-col gap-5 rounded-3xl bg-secondary-800 p-10 text-left">
         {#if value === 0}
-            <p class="text-lg">CyberPolls is your go-to for online polls done right. With top-notch security using the Paillier cryptosystem, it guarantees privacy while you share opinions, gather insights, and explore trends. Join the community and make your voice count with CyberPolls.</p>
+            <div class="flex {isMobile ? 'flex-col': ''} gap-10">
+                <div class="flex gap-5 flex-col {!isMobile ? 'w-[70%]': ''}">
+                    <h2 class="h2">Advanced Voting</h2>
+                    <p class="text-lg">CyberPolls is an online voting platform which uses the Paillier Cryptosystem to encrypt your polls/votes, keeping your data secure.</p>
+                </div>
+                <img src="./user-shield-solid.svg" alt="check-to-slot" class="{!isMobile ? 'w-[30%]': 'w-[100%]'}" >
+            </div>
         {/if}
 
         {#if value === 1}
-            <p class="text-lg">To create polls, first, you'll need to sign up for an account. Once you're logged in, head over to your dashboard. There, you'll find the 'Manage Polls' tab. Click on it, and you'll see a plus button – hit that to start creating your poll. It's that simple! Start engaging and gathering insights with your custom polls on CyberPolls.</p>
+            <div class="flex {isMobile ? 'flex-col': ''} gap-10">
+                <div class="flex gap-5 flex-col {!isMobile ? 'w-[70%]': ''}">
+                    <h2 class="h2">Secure Voting</h2>
+                    <p class="text-lg">The Paillier Cryptosystem is an homomorphic encryption system. Due to its additive properties, your vote is kept encrypted on the server <strong>permanently</strong> and can only be decrypted by the creator of the poll.</p>
+                </div>
+                <img src="./check-to-slot-solid.svg" alt="check-to-slot" class="{!isMobile ? 'w-[30%]': 'w-[100%]'}" >
+            </div>
         {/if}
 
         {#if value === 2}
-            <p class="text-lg">To share polls, navigate to the 'Manage Polls' tab in your dashboard and select 'Share.' You can then copy a link or use a QR code for easy distribution.</p>
-            <p class="text-lg">Joining polls is straightforward. For public polls, simply click on a shared link or locate them in the 'Polls' tab of your dashboard. For private polls, enter the provided code or utilize an invitation link/QR code. Start voting seamlessly with CyberPolls.</p>
+            <div class="flex {isMobile ? 'flex-col': ''} gap-10">
+                <div class="flex gap-5 flex-col {!isMobile ? 'w-[70%]': ''}">
+                    <h2 class="h2">Features</h2>
+                    <p class="text-lg">Create as many polls as you like and make your opinions heard by voting on other people's polls. As a poll creator, you also have access to various statistics about your polls and can share them to your friends.</p>
+                    <h2 class="h2">Want some privacy?</h2>
+                    <p class="text-lg">You can also create private polls which are only accessible by sharing your poll code/QR code.</p>
+                </div>
+                <img src="./square-poll-vertical-solid.svg" alt="check-to-slot" class="{!isMobile ? 'w-[30%]': 'w-[100%]'}" >
+            </div>
         {/if}
     </div>
+
+    <h2 class="h2">Don't have an account?</h2>
+    <a href="/register" class="btn btn-primary bg-secondary-800 w-[70%] mx-[auto]">Register here!</a>
 </div>
