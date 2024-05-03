@@ -1,7 +1,7 @@
 import { PUBLIC_BASE_API_URL } from "$env/static/public";
 
 async function register(user: any, password: string) {
-    return fetch(PUBLIC_BASE_API_URL + `/users`, {
+    return fetch(PUBLIC_BASE_API_URL + `/users/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

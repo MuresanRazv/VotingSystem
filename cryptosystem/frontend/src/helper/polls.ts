@@ -73,7 +73,7 @@ async function createPoll(poll: Poll) {
     })
   }
   
-  return await fetch(PUBLIC_BASE_API_URL + `/polls`, {
+  return await fetch(PUBLIC_BASE_API_URL + `/polls/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
