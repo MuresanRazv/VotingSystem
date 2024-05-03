@@ -1,12 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Header
 from app.models import Poll, User, Candidate, PollResults
 from app.services import create_poll, update_poll, delete_poll, get_polls, get_results, get_general_results, update_status, publish_poll, get_private_poll, user_voted, get_public_poll
 from app.crud import get_current_active_user, get_polls_by_user_id, get_poll_by_id
-from fastapi_utilities import repeat_at
 import logging
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='update_status.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
 
 router = APIRouter()
 
@@ -48,6 +47,19 @@ async def read_poll(poll_id: str, user: User = Depends(get_current_active_user))
         raise HTTPException(status_code=404, detail="Poll not found")
     return poll
 
+async def verify_google_scheduler(request_user_agent: str = Header(None)):
+    if request_user_agent != "Google-Cloud-Scheduler":
+        raise HTTPException(status_code=403, detail="Access denied")
+    return True
+
+@router.patch("/update_status", response_model=None, dependencies=[Depends(verify_google_scheduler)])
+async def poll_results_scheduler():
+    try:
+        await update_status()
+        logger.info("Poll status updated")
+    except Exception as e:
+        logger.error(f"Error updating poll status: {e}")
+
 @router.patch("/{poll_id}/publish", response_model=None)
 async def publish_poll_endpoint(poll_id: str, user: User = Depends(get_current_active_user)):
     updated_poll = await publish_poll(poll_id, user)
@@ -68,12 +80,3 @@ async def delete_poll_endpoint(poll_id: str, user: User = Depends(get_current_ac
     if poll is None:
         raise HTTPException(status_code=404, detail="Poll not found")
     await delete_poll(poll_id)
-
-@router.on_event("startup")
-@repeat_at(cron='0 7 * * *', logger=logger)
-async def poll_results_scheduler():
-    try:
-        await update_status()
-        logger.info("Poll status updated")
-    except Exception as e:
-        logger.error(f"Error updating poll status: {e}")
