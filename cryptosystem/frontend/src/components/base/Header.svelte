@@ -29,31 +29,31 @@
 
 <Drawer>
     <div class="flex flex-col gap-5 p-5">
-        <button type="button" class="btn variant-ringed-secondary" on:click={() => { goto('/'); drawerStore.close(); }}>
+        <button type="button" class="btn bg-secondary-800" on:click={() => { goto('/'); drawerStore.close(); }}>
             <img class="w-5 h-5" src="../house-solid.svg" alt="logo" />
             <span class="mx-[auto]">Home</span>
         </button>
         {#if !$userToken}
-                <button type="button" class="btn variant-ringed-secondary" on:click={() => { goto('/register'); drawerStore.close() }}>Register</button>
-                <button type="button" class="btn variant-ringed-secondary" on:click={() => { goto('/login'); drawerStore.close() }}>Login</button>
+                <button type="button" class="btn bg-secondary-800" on:click={() => { goto('/register'); drawerStore.close() }}>Register</button>
+                <button type="button" class="btn bg-secondary-800" on:click={() => { goto('/login'); drawerStore.close() }}>Login</button>
         {:else}
-            <button type="button" class="btn variant-ringed-secondary" on:click={() => { goto('/dashboard'); drawerStore.close(); $currentTab = 1; }}>
+            <button type="button" class="btn bg-secondary-800" on:click={() => { goto('/dashboard'); drawerStore.close(); $currentTab = 1; }}>
                 <img class="w-5 h-5" src="../square-poll-vertical-solid.svg" alt="logo" />
                 <span class="mx-[auto]">Dashboard</span>
             </button>
-            <button type="button" class="btn variant-ringed-secondary" on:click={() => { goto('/dashboard'); drawerStore.close(); $currentTab = 3; }}>
+            <button type="button" class="btn bg-secondary-800" on:click={() => { goto('/dashboard'); drawerStore.close(); $currentTab = 3; }}>
                 <img class="w-5 h-5" src="../check-to-slot-solid.svg" alt="logo" />
                 <span class="mx-[auto]">Polls</span>
             </button>
-            <button type="button" class="btn variant-ringed-secondary" on:click={() => { goto('/dashboard'); drawerStore.close(); $currentTab = 2; }}>
+            <button type="button" class="btn bg-secondary-800" on:click={() => { goto('/dashboard'); drawerStore.close(); $currentTab = 2; }}>
                 <img class="w-5 h-5" src="../table-columns-solid.svg" alt="logo" />
                 <span class="mx-[auto]">Manage Polls</span>
             </button>
-            <button type="button" class="btn variant-ringed-secondary" on:click={() => { goto('/dashboard'); drawerStore.close(); $currentTab = 0; }}>
+            <button type="button" class="btn bg-secondary-800" on:click={() => { goto('/dashboard'); drawerStore.close(); $currentTab = 0; }}>
                 <img class="w-5 h-5" src="../../user-solid.svg" alt="logo" />
                 <span class="mx-[auto]">Personal Information</span>
             </button>
-            <button type="button" class="btn variant-filled-error" on:click={() => {
+            <button type="button" class="btn bg-error-600" on:click={() => {
                 localStorage.removeItem('access_token');
                 window.location.href = '/';
 		drawerStore.close();
