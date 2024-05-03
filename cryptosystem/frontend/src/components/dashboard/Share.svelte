@@ -1,12 +1,13 @@
 <script lang="ts">
 	import SvgQR from '@svelte-put/qr/svg/QR.svelte';
+    import { PUBLIC_BASE_URL } from '$env/static/public';
     import { clipboard } from '@skeletonlabs/skeleton';
     
     export let poll_code: string;
     export let poll_id: string;
     export let isMobile: boolean;
 
-    const poll_link = poll_code ? `http://localhost:5173/dashboard?poll_code=${poll_code}`: `http://localhost:5173/dashboard?poll_id=${poll_id}`;
+    const poll_link = PUBLIC_BASE_URL + (poll_code ? `?poll_code=${poll_code}`: `?poll_id=${poll_id}`);
     const poll_logo = '../privacy-document-icon.svg';
     let show_link_copied = false;
 

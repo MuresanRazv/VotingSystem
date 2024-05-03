@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '/home/muresanrazvan/Documents/VotingSystem/cryptosystem/backend')
+
 from fastapi import FastAPI, HTTPException
 from app.routers import user_router, login_router, vote_router, poll_router
 from fastapi import FastAPI

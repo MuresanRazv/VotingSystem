@@ -14,6 +14,7 @@
     function handleLogin() {
         login(email, password)
         .then(data => {
+            console.log('ha')
             localStorage.setItem('access_token', data.access_token)
             $userToken
             window.location.href = '/dashboard'

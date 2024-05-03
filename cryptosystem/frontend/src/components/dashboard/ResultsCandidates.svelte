@@ -68,6 +68,11 @@
                                 class="text-yellow-500">
                                 In Progress
                             </strong>
+                        {:else if results.status == 'pending'}
+                            Poll Status: <strong 
+                                class="text-blue-500">
+                                Pending
+                            </strong>
                         {:else}
                             Poll Status: <strong 
                                 class="text-green-500">

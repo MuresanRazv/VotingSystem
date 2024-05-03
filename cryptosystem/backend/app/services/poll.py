@@ -17,7 +17,9 @@ async def create_poll(poll_data: Poll, user_id: str):
     poll_obj = Poll(**poll_data.model_dump())
     
     # set status
-    poll_obj.status = 'in_progress'
+    poll_obj.status = 'pending'
+    if poll_obj.start_date.date() == datetime.now().date():
+        poll_obj.status = 'in_progress'
 
     # generate private code
     if poll_obj.is_private:
@@ -217,6 +219,15 @@ def add_votes_by_days(votes_this_week: dict, votes: List[Vote]):
     return votes_this_week
 
 async def update_status():
+    # update status for pending polls
+    polls = await get_polls_by_status('pending')
+
+    for poll in polls:
+        if (poll.start_date <= datetime.now()):
+            poll.status = 'in_progress'
+            await update_poll_crud(poll.id, poll)
+
+    # update status for started polls
     polls = await get_polls_by_status('in_progress')
 
     for poll in polls:
