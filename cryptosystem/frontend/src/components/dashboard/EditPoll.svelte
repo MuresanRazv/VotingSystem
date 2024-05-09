@@ -5,6 +5,7 @@
     import isMobileStore from "../../stores/generalStore";
 
     let isMobile = false;
+    let loading = false;
 
     isMobileStore.subscribe(value => {
         isMobile = value;
@@ -58,6 +59,8 @@
         if (!poll.title || !poll.description || !validCandidates()) {
             return;
         }
+        loading = true;
+
         // Poll exists
         if (poll._id) {
             updatePoll(poll)
@@ -69,6 +72,9 @@
             .then(() => {
                 $polls = getUserPolls();
                 toastStore.trigger(updated);
+            })
+            .finally(() => {
+                loading = false;
             });
         } else {
             // Create poll
@@ -81,12 +87,16 @@
             .then(() => {
                 $polls = getUserPolls();
                 toastStore.trigger(created);
+            })
+            .finally(() => {
+                loading = false;
             });
         }
     }
 
     function handleDelete() {
         if (poll._id) {
+            loading = true;
             removePoll(poll._id)
             .then((response) => {
                 if (response.ok) {
@@ -100,8 +110,11 @@
         }
     }
 </script>
-
-<div class="card max-h-[80vh] {!isMobile ? 'p-10 w-[80%]': 'p-5 w-[95%]'} flex flex-col gap-5 overflow-auto">
+    {#if loading}
+        <img src="./tube-spinner.svg" alt="Loading Spinner" class="absolute w-14 h-14 z-[9999]">
+        <p class="absolute z-[9999] top-[54%]">{!poll._id ? 'Creating your poll...' : 'Updating your poll...'}</p>
+    {/if}
+<div class="card max-h-[80vh] {!isMobile ? 'p-10 w-[80%]': 'p-5 w-[95%]'} flex flex-col gap-5 overflow-auto {loading ? 'blur-sm pointer-events-none': ''}">
     <label class="label">
         <span>Title</span>
         <input class="input {!poll.title ? 'input-warning': ''}" type="text" placeholder="Name" bind:value={poll.title} />

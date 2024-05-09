@@ -9,7 +9,7 @@ ALPHABET = (
     " \t\n\r"
 )
 
-BIT_LENGTH = 128
+BIT_LENGTH = 2048
 
 def L(x, n):
     return (x - 1) // n
