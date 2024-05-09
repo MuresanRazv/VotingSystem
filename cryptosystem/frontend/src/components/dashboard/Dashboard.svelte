@@ -10,6 +10,7 @@
 	import Polls from "./Polls.svelte";
     import isMobileStore from "../../stores/generalStore";
     import { PUBLIC_BASE_API_URL } from "$env/static/public";
+	import { getUser } from "../../helper/authentication";
 
     let isMobile = false;
 
@@ -24,13 +25,7 @@
         if (!$userToken) {
             window.location.href = '/login'
         } else {
-            fetch(PUBLIC_BASE_API_URL + '/users/me', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                }
-            })
+            getUser()
             .then(response => {
                 if (response.status === 401) {
                     localStorage.removeItem('access_token')
@@ -41,8 +36,7 @@
             })
             .then(data => {
                 user.set(data)
-
-                 // redirect user to dashboard poll if joined poll by link
+                // redirect user to dashboard poll if joined poll by link
                 if (urlParams.has("poll_code") || urlParams.has("poll_id")) {
                     $currentTab = 3;
                 }

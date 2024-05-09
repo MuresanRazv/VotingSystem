@@ -47,5 +47,15 @@ async function login(email: string, password: string) {
     })
     .then(response => response.json()
 )}
+
+async function getUser() {
+    return fetch(PUBLIC_BASE_API_URL + '/users/me', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+    })
+}
     
-export { register, updateInformation, login };
+export { register, updateInformation, login, getUser };
