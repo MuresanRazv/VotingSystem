@@ -85,7 +85,7 @@
                 </h2>
                 {#if results.status}
                     {#if results.status == 'completed' || results.status == 'in_progress'}
-                        <button class="btn btn-primary variant-filled w-[max-content]" disabled={results.status != 'completed'} on:click={() => {if (results._id) {handlePublishResults(results._id, results.status)}}}>
+                        <button class="btn btn-primary variant-filled w-[max-content]" disabled={results.status != 'completed'} on:click={() => {if (results.poll_id) {handlePublishResults(results.poll_id, results.status)}}}>
                             Publish Results
                         </button>
                     {:else if results.status == 'published'}

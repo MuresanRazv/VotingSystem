@@ -33,7 +33,7 @@ export type VoteByDay = {
 }
 
 export type PollResults = {
-  _id?: string,
+  poll_id?: string,
   total_votes: number,
   candidates: Candidate[],
   county_statistics: CountyStatistics[],
