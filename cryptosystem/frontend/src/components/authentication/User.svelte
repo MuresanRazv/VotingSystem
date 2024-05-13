@@ -8,6 +8,7 @@
     import isMobileStore from "../../stores/generalStore";
 
     let isMobile = false;
+    let loading = false;
 
     isMobileStore.subscribe(value => {
         isMobile = value;
@@ -23,6 +24,7 @@
         if ($user.firstname == '' || $user.lastname == '' || $user.county == '' || $user.county == '') {
             toastStore.trigger(t);
         } else {
+            loading = true;
             updateInformation($user)
             .then(response => {
                 if (response.status == 404) {
@@ -38,6 +40,9 @@
                         message: 'Information updated successfully',
                     });
                 }
+            })
+            .finally(() => {
+                loading = false;
             })
         }
     }
@@ -91,6 +96,13 @@
             </select>
         </label>
 
-        <button type="button" class="btn w-[100%] mx-[auto] variant-filled" on:click={handleUpdateInformation}>Update Information</button>
+        <button type="button" disabled={loading} class="btn w-[100%] mx-[auto] variant-filled" on:click={handleUpdateInformation}>
+            {#if loading}
+                <img src="./tube-spinner.svg" alt="Loading Spinner" class="w-6 h-6">
+                Updating your account...
+            {:else}
+                Update Information
+            {/if}
+        </button>
     </div>	
 </div>
