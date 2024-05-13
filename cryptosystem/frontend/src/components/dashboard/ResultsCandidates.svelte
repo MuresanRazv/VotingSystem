@@ -31,12 +31,13 @@
 
 <Toast />
 
-{#await results}
-    <div class="placeholder animate-pulse" />
-{:then results}
-    {#if results.candidates.length > 0}
-        <div class="flex {isMobile ? 'flex-col': '' } w-[100%] gap-5">
-            <div class="bg-surface-800 p-10 rounded-3xl {!isMobile ? 'w-[50%]': '' }">
+<div class="flex {isMobile ? 'flex-col': '' } w-[100%] gap-5">
+    {#await results}
+        <div class="placeholder animate-pulse {!isMobile ? 'w-[50%]': '' } h-[175px] p-10 rounded-3xl" />
+        <div class="placeholder animate-pulse {!isMobile ? 'w-[50%]': '' } h-[175px] p-10 rounded-3xl" />
+    {:then results}
+        {#if results.candidates.length > 0}
+            <div class="bg-surface-800 p-10 rounded-3xl {!isMobile ? 'w-[50%]': '' } h-[175px]">
                 <h2>
                     Candidates Statistics
                 </h2>
@@ -60,7 +61,7 @@
                     {/each}
                 </div>
             </div>
-            <div class="flex flex-col gap-5 bg-surface-800 p-10 rounded-3xl {!isMobile ? 'w-[50%]': '' }">
+            <div class="flex flex-col gap-5 bg-surface-800 p-10 rounded-3xl {!isMobile ? 'w-[50%]': '' } h-[175px]">
                 <h2>
                     {#if results.status}
                         {#if results.status == 'in_progress'}
@@ -92,7 +93,7 @@
                         <p>Results are published.</p>
                     {/if}
                 {/if}
-            </div>
-        </div>
-    {/if}
-{/await}
+            </div>  
+        {/if}
+    {/await}
+</div>

@@ -28,6 +28,8 @@
         user_id: $user._id ? $user._id : ''
     }
 
+    let loading = false;
+
     onMount(() => {
         // Initialize tallies
         vote.candidates.forEach(candidate => {
@@ -37,6 +39,7 @@
 
     function handleSubmitVote() {
         if (poll._id) {
+            loading = true;
             addVote(poll._id, vote)
             .then((response) => {
                 $polls = getPublicPolls();
@@ -50,6 +53,9 @@
                 } else {
                     toastStore.trigger(errorVote);
                 }
+            })
+            .finally(() => {
+                loading = false;
             })
         }
     }
@@ -69,7 +75,11 @@
     }
 </script>
 
-<div class="card max-h-[80vh] w-[80%] p-10 flex flex-col gap-5 overflow-auto">
+{#if loading}
+    <img src="./tube-spinner.svg" alt="Loading Spinner" class="absolute w-14 h-14 z-[9999]">
+    <p class="absolute z-[9999] top-[54%]">Adding your vote...</p>
+{/if}
+<div class="card max-h-[80vh] w-[80%] p-10 flex flex-col gap-5 overflow-auto {loading ? 'blur-sm pointer-events-none': ''}">
     <h3>{poll.title}</h3>
     <p>{poll.description}</p>
     <form>

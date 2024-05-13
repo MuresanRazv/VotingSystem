@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <div class="flex {isMobile ? 'flex-col': ''} w-[100%] h-[100%] gap-10">                                
+    <div class="flex {isMobile ? 'flex-col': ''} w-[100%] h-[100%] gap-5">                                
         <ResultsCharts {isMobile} {results} showBarChart={true} />
     </div>
     <ResultsCandidates {isMobile} {results} />

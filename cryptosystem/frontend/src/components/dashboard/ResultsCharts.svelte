@@ -9,34 +9,31 @@
 
 {#await results}
     {#if showBarChart}
-        <div class="bg-surface-800 h-[max-content] w-[60%] rounded-3xl p-5">
+        <div class="bg-surface-800 h-[max-content] {!isMobile ? 'w-[60%]': '' } rounded-3xl p-5">
             <BarChartSimple data={[]} options={{
                 title: 'Votes This Week',
                 axes: {
-                    left: {
-                        mapsTo: 'value'
-                    },
+                    left: {},
                     bottom: {
-                        mapsTo: 'group',
-                        // @ts-ignore
                         scaleType: 'labels'
                     }
                 },
+                data: {
+                    loading: true
+                },
                 height: '400px',
                 width: '100%',
-                resizable: true,
                 theme: "g100",
             }} />
         </div>
     {/if}
-    <div class="bg-surface-800 h-[max-content] {!showBarChart ? 'w-[100%]': 'w-[40%]'} rounded-3xl p-5">
+    <div class="bg-surface-800 h-[max-content] {!showBarChart || isMobile ? 'w-[100%]': 'w-[40%]'} rounded-3xl p-5">
         <PieChart data={[]} options={{
             title: 'County Statistics',
             height: '400px',
             width: '100%',
-            resizable: true,
-            legend: {
-                position: 'bottom'
+            data: {
+                loading: true
             },
             theme: "g100"
         }} />
@@ -77,7 +74,7 @@
         })} options={{
             title: 'County Statistics',
             height: '400px',
-            width: '100%',
+            width: !isMobile ? '100%': '90%',
             resizable: true,
             legend: {
                 position: 'bottom'
