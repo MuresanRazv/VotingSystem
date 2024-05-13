@@ -26,12 +26,15 @@
         isMobile = value;
     });
 
+    let loading = false;
+
     function handleRegister() {
         if ($user.firstname == '' || $user.lastname == '' || $user.county == '' || $user.county == '' || $user.email == '' || $user.username == '' || password == '') {
             toastStore.trigger(t);
         } else if (password !== confirmPassword) {
             toastStore.trigger(p);
         } else {
+            loading = true;
             register($user, password)
             .then(response => {
                 if (response.status == 409) {
@@ -53,6 +56,9 @@
                     window.location.href = '/dashboard'
                     goto('/dashboard');
                 })
+            })
+            .finally(() => {
+                loading = false;
             })
         }
     }
@@ -124,6 +130,13 @@
             </select>
         </label>
 
-        <button type="button" class="btn variant-filled-secondary" on:click={handleRegister}>Register</button>
+        <button type="button" class="btn variant-filled-secondary" disabled={loading} on:click={handleRegister}>
+            {#if loading}
+                <img src="./tube-spinner.svg" alt="Loading Spinner" class="w-6 h-6">
+                Creating your account...
+            {:else}
+                Register
+            {/if}
+        </button>
     </div>	
 </div>
