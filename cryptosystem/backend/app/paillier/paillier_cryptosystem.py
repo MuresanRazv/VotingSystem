@@ -1,14 +1,6 @@
 from app.paillier.number_generation_helper import generate_prime_candidate, binary_gcd, lcm, modinv
 import random
 
-ALPHABET = (
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz"
-    "0123456789"
-    "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
-    " \t\n\r"
-)
-
 BIT_LENGTH = 2048
 
 def L(x, n):
