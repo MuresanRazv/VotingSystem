@@ -18,7 +18,7 @@ async def create_poll(poll_data: Poll, user_id: str):
     
     # set status
     poll_obj.status = 'pending'
-    if poll_obj.start_date.date() == datetime.now().date():
+    if poll_obj.start_date.date() >= datetime.now().date():
         poll_obj.status = 'in_progress'
 
     # generate private code

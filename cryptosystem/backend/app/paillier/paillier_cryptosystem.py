@@ -1,19 +1,19 @@
-from app.paillier.number_generation_helper import generate_prime_candidate, binary_gcd, lcm, modinv
+from number_generation_helper import generate_prime_candidate, binary_gcd, lcm, modinv
 import random
 
-BIT_LENGTH = 2048
+BIT_LENGTH = 1024
 
 def L(x, n):
     return (x - 1) // n
 
-async def generate_keys():
-    p = generate_prime_candidate(BIT_LENGTH)
-    q = generate_prime_candidate(BIT_LENGTH)
+async def generate_keys(bit_length = BIT_LENGTH):
+    p = generate_prime_candidate(bit_length)
+    q = generate_prime_candidate(bit_length)
     
     # check p and q are relatively prime
     while binary_gcd(p*q, (p-1)*(q-1)) != 1:
-        p = generate_prime_candidate(BIT_LENGTH)
-        q = generate_prime_candidate(BIT_LENGTH)
+        p = generate_prime_candidate(bit_length)
+        q = generate_prime_candidate(bit_length)
 
     n = p * q
     lbd = lcm(p - 1, q - 1)
@@ -27,8 +27,6 @@ async def generate_keys():
     return (n, g), (lbd, u)
 
 async def encrypt(public_key, plaintext):
-    # Serialize plaintext
-    # m = sh.serialize(plaintext)
     m = plaintext
     n, g = public_key
 
@@ -53,6 +51,6 @@ async def decrypt(public_key, private_key, ciphertext):
     return L(pow(ciphertext, lbd, n**2), n) * u % n
 
 # works only for numbers
-async def add(public_key, first_plaintext, second_plaintext):
+async def add(public_key, first_ciphertext, second_ciphertext):
     n, _ = public_key
-    return ((first_plaintext % n**2) * (second_plaintext % n**2)) % n**2
+    return ((first_ciphertext % n**2) * (second_ciphertext % n**2)) % n**2
